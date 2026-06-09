@@ -72,3 +72,21 @@ r2 = r2_score(
 print("MAE:", mae)
 print("RMSE:", rmse)
 print("R²:", r2)
+
+# Save model
+import os
+import joblib
+
+os.makedirs("../models/random_forest", exist_ok=True)
+
+joblib.dump(
+    model,
+    "../models/random_forest/model.pkl"
+)
+
+joblib.dump(
+    vectorizer,
+    "../models/random_forest/vectorizer.pkl"
+)
+
+print("Model saved successfully!")
