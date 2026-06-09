@@ -60,6 +60,20 @@ def tokenize_function(examples):
         max_length=512
     )
 
+# Rename label column to "labels" for Hugging Face compatibility
+
+train_dataset = train_dataset.rename_column(
+    "score",
+    "labels"
+)
+
+test_dataset = test_dataset.rename_column(
+    "score",
+    "labels"
+)
+
+print(train_dataset[0])
+
 # Tokenize Datasets
 
 tokenized_train = train_dataset.map(
