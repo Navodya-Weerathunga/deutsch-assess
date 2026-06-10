@@ -113,3 +113,41 @@ tokenized_train.set_format("torch")
 tokenized_test.set_format("torch")
 
 print(tokenized_train[0])
+
+# Add Metrics Function
+
+import numpy as np
+from sklearn.metrics import (
+    mean_absolute_error,
+    mean_squared_error,
+    r2_score
+)
+
+def compute_metrics(eval_pred):
+
+    predictions, labels = eval_pred
+
+    predictions = predictions.squeeze()
+
+    mae = mean_absolute_error(
+        labels,
+        predictions
+    )
+
+    rmse = np.sqrt(
+        mean_squared_error(
+            labels,
+            predictions
+        )
+    )
+
+    r2 = r2_score(
+        labels,
+        predictions
+    )
+
+    return {
+        "mae": mae,
+        "rmse": rmse,
+        "r2": r2
+    }
