@@ -191,3 +191,7 @@ trainer = Trainer(
 
 print("Trainer created.")
 
+print("Starting training...")
+
+trainer.train()
+
