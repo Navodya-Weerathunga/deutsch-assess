@@ -99,31 +99,6 @@ model = AutoModelForSequenceClassification.from_pretrained(
 
 print("Model loaded.")
 
-# Define Training Arguments
-
-from transformers import TrainingArguments
-
-training_args = TrainingArguments(
-    output_dir="../results/xlm_roberta",
-
-    num_train_epochs=3,
-
-    per_device_train_batch_size=4,
-    per_device_eval_batch_size=4,
-
-    eval_strategy="epoch",
-
-    save_strategy="epoch",
-
-    logging_steps=10,
-
-    learning_rate=2e-5,
-
-    weight_decay=0.01
-)
-
-print("Training arguments created.")
-
 # Prepare dataset for Trainer
 
 tokenized_train = tokenized_train.remove_columns(
@@ -176,3 +151,43 @@ def compute_metrics(eval_pred):
         "rmse": rmse,
         "r2": r2
     }
+
+# Define Training Arguments
+
+from transformers import TrainingArguments
+
+training_args = TrainingArguments(
+    output_dir="../results/xlm_roberta",
+
+    num_train_epochs=3,
+
+    per_device_train_batch_size=4,
+    per_device_eval_batch_size=4,
+
+    eval_strategy="epoch",
+
+    save_strategy="epoch",
+
+    logging_steps=10,
+
+    learning_rate=2e-5,
+
+    weight_decay=0.01
+)
+
+print("Training arguments created.")
+
+# Create Trainer
+
+from transformers import Trainer
+
+trainer = Trainer(
+    model=model,
+    args=training_args,
+    train_dataset=tokenized_train,
+    eval_dataset=tokenized_test,
+    compute_metrics=compute_metrics
+)
+
+print("Trainer created.")
+
