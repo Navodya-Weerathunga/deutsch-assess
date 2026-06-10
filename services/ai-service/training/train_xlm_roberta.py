@@ -87,3 +87,29 @@ tokenized_test = test_dataset.map(
 )
 
 print(tokenized_train)
+
+# Load XLM-RoBERTa Model for Regression
+
+from transformers import AutoModelForSequenceClassification
+
+model = AutoModelForSequenceClassification.from_pretrained(
+    "xlm-roberta-base",
+    num_labels=1
+)
+
+print("Model loaded.")
+
+# Prepare dataset for Trainer
+
+tokenized_train = tokenized_train.remove_columns(
+    ["model_input", "__index_level_0__"]
+)
+
+tokenized_test = tokenized_test.remove_columns(
+    ["model_input", "__index_level_0__"]
+)
+
+tokenized_train.set_format("torch")
+tokenized_test.set_format("torch")
+
+print(tokenized_train[0])
