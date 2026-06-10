@@ -1,0 +1,4 @@
+Random Forest
+MAE: 0.739
+RMSE: 0.968
+R²: 0.734
