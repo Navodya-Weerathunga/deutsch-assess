@@ -240,6 +240,79 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+// Login
+// ✅ Login
+router.post("/login", async (req, res) => {
+  try {
+    const { regNo, password } = req.body;
+
+    // Find user by registration number
+    const user = await User.findOne({ regNo });
+
+    if (!user) {
+      return res.status(400).json({ msg: "Invalid Web App ID or Password" });
+    }
+
+    // Block withdrew students
+    if (user.role === "STUDENT" && user.status === "WITHDREW") {
+      return res.status(403).json({
+        msg: "Your account has been withdrawn. Please contact the administrator."
+      });
+    }
+
+    // Compare password
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ msg: "Invalid Web App ID or Password" });
+    }
+
+    // Generate JWT
+    const token = jwt.sign(
+      {
+        id: user._id,
+        regNo: user.regNo,
+        role: user.role,
+        firstName: user.firstName,
+        lastName: user.lastName
+      },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    // Store JWT in cookie
+    res.cookie("authToken", token, {
+      httpOnly: true,
+      secure: false,      // Change to true in production with HTTPS
+      sameSite: "Lax",
+      path: "/",
+      maxAge: 60 * 60 * 1000 // 1 hour
+    });
+
+    // Return user details
+    return res.status(200).json({
+      msg: "Login successful",
+      user: {
+        id: user._id,
+        regNo: user.regNo,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        medium: user.medium,
+        batch: user.batch,
+        assignedCourses: user.assignedCourses
+      }
+    });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      error: err.message
+    });
+  }
+});
+
 module.exports = router;
 
 
