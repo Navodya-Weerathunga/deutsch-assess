@@ -152,7 +152,8 @@ router.post("/signup", async (req, res) => {
 
     user = new User({
       regNo,   // <-- assign here
-      name,
+      firstName,
+      lastName,
       email,
       password: hashedPassword,
       role,
