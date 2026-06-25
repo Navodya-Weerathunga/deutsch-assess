@@ -164,7 +164,9 @@ router.post("/signup", async (req, res) => {
       user.assignedCourses = assignedCourses;
       user.batch = batch;
       user.medium = medium;
-      user.studentStatus = "UNCERTAIN";
+      user.status = "UNCERTAIN";
+      user.plan = plan;
+      user.tutorIncharged = tutorIncharged; 
       
       // Tutor Incharge logic
       if (tutorIncharged) {
@@ -280,6 +282,9 @@ router.post("/login", async (req, res) => {
       { expiresIn: "1h" }
     );
 
+    // ✅ Print token in terminal (for development only)
+    console.log("JWT Token:", token);
+
     // Store JWT in cookie
     res.cookie("authToken", token, {
       httpOnly: true,
@@ -301,7 +306,7 @@ router.post("/login", async (req, res) => {
         role: user.role,
         medium: user.medium,
         batch: user.batch,
-        assignedCourses: user.assignedCourses
+        assignedCourses: user.assignedCourses,
       }
     });
 
@@ -317,6 +322,17 @@ router.post("/login", async (req, res) => {
 router.post("/logout", (req, res) => {
   res.clearCookie("authToken", { path: "/" });
   return res.status(200).json({ msg: "Logout successful" });
+});
+
+// Get all students (Admin only)
+router.get("/students", verifyToken, checkRole('ADMIN'), async (req, res) => {
+  try {
+    const students = await User.find({ role: "STUDENT" }).select("-password");
+    res.json(students);
+  }
+  catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;
