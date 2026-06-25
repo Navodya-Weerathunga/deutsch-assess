@@ -313,6 +313,12 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// Logout
+router.post("/logout", (req, res) => {
+  res.clearCookie("authToken", { path: "/" });
+  return res.status(200).json({ msg: "Logout successful" });
+});
+
 module.exports = router;
 
 
