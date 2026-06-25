@@ -1,57 +1,88 @@
 <div class="login-page">
 
-    <div class="login-card">
+  <div class="login-card">
 
-        <div class="text-center mb-4">
+    <div class="text-center mb-4">
 
-            <h1>DEUTSCH-ASSESS</h1>
+      <h1>DEUTSCH-ASSESS</h1>
 
-            <p>
-                AI-Based German Assessment Platform
-            </p>
-
-        </div>
-
-        <form>
-
-            <mat-form-field appearance="outline" class="full-width">
-
-                <mat-label>Web App ID</mat-label>
-
-                <input
-                    matInput
-                    placeholder="Enter your Web App ID">
-
-                <mat-icon matSuffix>badge</mat-icon>
-
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="full-width">
-
-                <mat-label>Password</mat-label>
-
-                <input
-                    matInput
-                    type="password"
-                    placeholder="Enter your password">
-
-                <mat-icon matSuffix>lock</mat-icon>
-
-            </mat-form-field>
-
-            <button
-                mat-raised-button
-                color="primary"
-                class="login-btn">
-
-                <mat-icon>login</mat-icon>
-
-                Login
-
-            </button>
-
-        </form>
+      <p>
+        AI-Based German Assessment Platform
+      </p>
 
     </div>
+
+    <form #loginForm="ngForm" (ngSubmit)="login()">
+
+      <!-- Web App ID -->
+      <mat-form-field appearance="outline" class="full-width">
+
+        <mat-label>Web App ID</mat-label>
+
+        <input
+          matInput
+          type="text"
+          name="regNo"
+          [(ngModel)]="regNo"
+          placeholder="Enter your Web App ID"
+          required>
+
+        <mat-icon matSuffix>badge</mat-icon>
+
+      </mat-form-field>
+
+      <!-- Password -->
+      <mat-form-field appearance="outline" class="full-width">
+
+        <mat-label>Password</mat-label>
+
+        <input
+            matInput
+            [type]="hidePassword ? 'password' : 'text'"
+            name="password"
+            [(ngModel)]="password"
+            placeholder="Enter your Password"
+            required>
+
+        <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hidePassword = !hidePassword">
+
+            <mat-icon>
+            {{ hidePassword ? 'visibility_off' : 'visibility' }}
+            </mat-icon>
+
+        </button>
+
+      </mat-form-field>
+
+      <!-- Error Message -->
+      <div
+        *ngIf="errorMessage"
+        class="alert alert-danger text-center mb-3">
+
+        {{ errorMessage }}
+
+      </div>
+
+      <!-- Login Button -->
+      <button
+        mat-raised-button
+        color="primary"
+        class="login-btn"
+        type="submit"
+        [disabled]="isLoading || loginForm.invalid">
+
+        <mat-icon>login</mat-icon>
+
+        {{ isLoading ? 'Logging in...' : 'Login' }}
+
+      </button>
+
+    </form>
+
+  </div>
 
 </div>
