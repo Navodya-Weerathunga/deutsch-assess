@@ -12,6 +12,9 @@ export const routes: Routes = [
 
     // Login route
     {path: 'login', loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent)},
+
+    // Admin navbar route
+    {path: 'admin-navbar', loadComponent: () => import('./components/admin-nav-bar/admin-nav-bar.component').then(m => m.AdminNavbarComponent)},
 ]
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
