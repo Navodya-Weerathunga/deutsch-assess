@@ -2,8 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const connectDB = require('./config/db');
-const cors = require("cors");
-const auth = require("./middleware/auth");
+const cors = require('cors');
+const { verifyToken } = require("./middleware/auth");
 
 const allowedOrigins = ["http://localhost:4200"];
 
@@ -28,7 +28,7 @@ const userRoutes = require('./routes/user');
 app.use("/api/users", userRoutes);
 
 // (Optional) Protected test route using auth middleware
-app.get("/protected", auth, (req, res) => {
+app.get("/protected", verifyToken, (req, res) => {
   res.json({ msg: "Protected route accessed successfully" });
 });
 

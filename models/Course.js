@@ -9,3 +9,5 @@ const CourseSchema = new mongoose.Schema({
     medium: { type: String, required: true },
     createdAt: { type: Date, default: Date.now }
 });
+
+module.exports = mongoose.model('Course', CourseSchema);
