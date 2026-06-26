@@ -131,5 +131,25 @@ export class ClassService {
 
     }
 
+    // Generate Assessment
+
+    generateAssessment(classId: string): Observable<any> {
+
+        return this.http.post(
+
+            `${this.apiUrl}/${classId}/generate-assessment`,
+
+            {},
+
+            {
+
+            withCredentials: true
+
+            }
+
+        );
+
+    }
+
 
 }

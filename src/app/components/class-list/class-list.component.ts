@@ -192,9 +192,35 @@ export class ClassListComponent implements OnInit {
 
     generateAssessment(classItem: any): void {
 
-    console.log("Generate Assessment");
+        if (!confirm("Generate assessment for this class?")) {
 
-    console.log(classItem);
+            return;
+
+        }
+
+        this.classService.generateAssessment(classItem._id)
+
+            .subscribe({
+
+            next: (response) => {
+
+                alert("Assessment generated successfully.");
+
+                console.log(response);
+
+                this.loadClasses();
+
+            },
+
+            error: (err) => {
+
+                console.error(err);
+
+                alert(err.error?.msg || "Failed to generate assessment.");
+
+            }
+
+        });
 
     }
 

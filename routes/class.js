@@ -11,6 +11,10 @@ const zoomService = require("../services/zoom.service");
 const { verifyToken } = require("../middleware/auth");
 const checkRole = require("../middleware/checkRloe");
 
+const Assessment = require("../models/Assessment");
+const transcriptService = require("../services/transcript.service");
+const assessmentService = require("../services/assessment.service");
+
 const fs = require("fs");
 const uploadTranscript = require("../middleware/uploadTranscripts");
 
@@ -441,7 +445,10 @@ router.post(
 
 );
 
-const transcriptService = require("../services/transcript.service");
+
+// =====================================================
+// Generate Assessment
+// =====================================================
 
 router.post(
     "/:id/generate-assessment",
@@ -451,36 +458,128 @@ router.post(
 
         try {
 
+            // ------------------------------------
+            // Find Class
+            // ------------------------------------
+
             const classDoc = await Class.findById(req.params.id);
 
             if (!classDoc) {
 
                 return res.status(404).json({
+
                     msg: "Class not found."
+
                 });
 
             }
+
+            // ------------------------------------
+            // Check Transcript
+            // ------------------------------------
 
             if (!classDoc.transcript) {
 
                 return res.status(400).json({
+
                     msg: "Please upload a transcript first."
+
                 });
 
             }
 
-            // Clean transcript
+            // ------------------------------------
+            // Prevent Duplicate Assessment
+            // ------------------------------------
+
+            const existingAssessment = await Assessment.findOne({
+
+                class: classDoc._id
+
+            });
+
+            if (existingAssessment) {
+
+                return res.status(400).json({
+
+                    msg: "Assessment has already been generated."
+
+                });
+
+            }
+
+            // ------------------------------------
+            // Clean Transcript
+            // ------------------------------------
+
             const cleanedTranscript =
-                transcriptService.cleanTranscript(classDoc.transcript);
+                transcriptService.cleanTranscript(
+                    classDoc.transcript
+                );
 
-            console.log("========== CLEANED TRANSCRIPT ==========");
-            console.log(cleanedTranscript);
+            // ------------------------------------
+            // Generate Assessment using GPT
+            // ------------------------------------
 
-            res.json({
+            console.log("STEP 1");
 
-                message: "Transcript cleaned successfully.",
+            const generatedAssessment =
+                await assessmentService.generateAssessment(
 
-                cleanedTranscript
+                    classDoc,
+
+                    cleanedTranscript
+
+                );
+            console.log("STEP 2");
+
+            console.log(generatedAssessment);
+
+            console.log("STEP 3");
+
+            // ------------------------------------
+            // Save Assessment
+            // ------------------------------------
+
+        const assessment = await Assessment.create({
+
+            class: classDoc._id,
+
+            title: generatedAssessment.title,
+
+            topic: generatedAssessment.topic,
+
+            level: generatedAssessment.level,
+
+            language: "German",
+
+            instructions: generatedAssessment.instructions,
+
+            totalMarks: generatedAssessment.totalMarks,
+
+            questions: generatedAssessment.questions
+
+        });
+
+        console.log("STEP 4");
+
+            // ------------------------------------
+            // Update Class
+            // ------------------------------------
+
+            classDoc.assessmentGenerated = true;
+
+            await classDoc.save();
+
+            // ------------------------------------
+            // Response
+            // ------------------------------------
+
+            res.status(201).json({
+
+                msg: "Assessment generated successfully.",
+
+                assessment
 
             });
 
@@ -491,13 +590,15 @@ router.post(
             console.error(err);
 
             res.status(500).json({
+
                 error: err.message
+
             });
 
         }
 
     }
-);
 
+);
 
 module.exports = router;
