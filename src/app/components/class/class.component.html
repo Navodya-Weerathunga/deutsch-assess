@@ -1,0 +1,213 @@
+<div class="page-container">
+
+    <!-- Sidebar -->
+    <app-admin-navbar></app-admin-navbar>
+
+    <!-- Main Content -->
+    <div class="content">
+
+        <mat-card class="class-card">
+
+            <mat-card-header>
+
+                <mat-card-title>
+                    <mat-icon>video_call</mat-icon>
+                    Create Zoom Class
+                </mat-card-title>
+
+            </mat-card-header>
+
+            <mat-divider></mat-divider>
+
+            <mat-card-content>
+
+                <form (ngSubmit)="createMeeting()">
+
+                    <div class="row">
+
+                        <!-- Topic -->
+                        <mat-form-field appearance="outline" class="full-width">
+
+                            <mat-label>Topic</mat-label>
+
+                            <input
+                                matInput
+                                [(ngModel)]="classData.topic"
+                                name="topic"
+                                required>
+
+                        </mat-form-field>
+
+                    </div>
+
+                    <div class="row two-column">
+
+                        <!-- Date -->
+                        <mat-form-field appearance="outline">
+
+                            <mat-label>Class Date</mat-label>
+
+                                <input
+                                    matInput
+                                    [matDatepicker]="picker"
+                                    [(ngModel)]="classData.classDate"
+                                    name="classDate"
+                                    required>
+
+                                <mat-datepicker-toggle
+                                    matSuffix
+                                    [for]="picker">
+                                </mat-datepicker-toggle>
+
+                                <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+
+                        <!-- Medium -->
+                        <mat-form-field appearance="outline">
+
+                            <mat-label>Medium</mat-label>
+
+                            <mat-select
+                                [(ngModel)]="classData.medium"
+                                name="medium"
+                                (selectionChange)="loadTutors()"
+                                required>
+
+                                <mat-option value="Sinhala">Sinhala</mat-option>
+                                <mat-option value="English">English</mat-option>
+                                <mat-option value="Tamil">Tamil</mat-option>
+
+                            </mat-select>
+
+                        </mat-form-field>
+
+                    </div>
+
+                    <div class="row two-column">
+
+                        <!-- Start Time -->
+                        <mat-form-field appearance="outline">
+
+                            <mat-label>Start Time</mat-label>
+
+                            <input
+                                matInput
+                                type="time"
+                                [(ngModel)]="classData.startTime"
+                                name="startTime"
+                                required>
+
+                        </mat-form-field>
+
+                        <!-- End Time -->
+                        <mat-form-field appearance="outline">
+
+                            <mat-label>End Time</mat-label>
+
+                            <input
+                                matInput
+                                type="time"
+                                [(ngModel)]="classData.endTime"
+                                name="endTime"
+                                required>
+
+                        </mat-form-field>
+
+                    </div>
+
+                    <div class="row two-column">
+
+                        <!-- Batch -->
+                        <mat-form-field appearance="outline">
+
+                            <mat-label>Batch</mat-label>
+
+                            <mat-select
+                                [(ngModel)]="classData.batch"
+                                name="batch"
+                                (selectionChange)="loadTutors()"
+                                required>
+
+                                <mat-option *ngFor="let batch of batches"
+                                            [value]="batch">
+
+                                    {{batch}}
+
+                                </mat-option>
+
+                            </mat-select>
+
+                        </mat-form-field>
+
+                        <!-- Level -->
+                        <mat-form-field appearance="outline">
+
+                            <mat-label>Level</mat-label>
+
+                            <mat-select
+                                [(ngModel)]="classData.level"
+                                name="level"
+                                (selectionChange)="loadTutors()"
+                                required>
+
+                                <mat-option value="A1">A1</mat-option>
+                                <mat-option value="A2">A2</mat-option>
+                                <mat-option value="B1">B1</mat-option>
+                                <mat-option value="B2">B2</mat-option>
+
+                            </mat-select>
+
+                        </mat-form-field>
+
+                    </div>
+
+                    <!-- Tutor -->
+                    <div class="row">
+
+                        <mat-form-field appearance="outline" class="full-width">
+
+                            <mat-label>Tutor</mat-label>
+
+                            <mat-select
+                                [(ngModel)]="classData.tutor"
+                                name="tutor"
+                                required>
+
+                                <mat-option
+                                    *ngFor="let tutor of tutors"
+                                    [value]="tutor._id">
+
+                                    {{ tutor.firstName }} {{ tutor.lastName }}
+
+                                </mat-option>
+
+                            </mat-select>
+
+                        </mat-form-field>
+
+                    </div>
+
+                    <div class="button-row">
+
+                        <button
+                            mat-raised-button
+                            color="primary"
+                            type="submit">
+
+                            <mat-icon>video_call</mat-icon>
+
+                            Create Zoom Meeting
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </mat-card-content>
+
+        </mat-card>
+
+    </div>
+
+</div>

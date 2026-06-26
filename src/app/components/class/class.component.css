@@ -1,0 +1,125 @@
+/* ===========================================
+   Page Layout
+=========================================== */
+
+.page-container {
+    display: flex;
+    min-height: 100vh;
+    background: #f4f7fc;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ===========================================
+   Main Content
+=========================================== */
+
+.content {
+    flex: 1;
+    padding: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* ===========================================
+   Card
+=========================================== */
+
+.class-card {
+    width: 100%;
+    max-width: 900px;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+mat-card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #1565c0;
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+mat-divider {
+    margin-bottom: 25px;
+}
+
+/* ===========================================
+   Form Layout
+=========================================== */
+
+.row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.two-column mat-form-field {
+    flex: 1;
+}
+
+.full-width {
+    width: 100%;
+}
+
+/* ===========================================
+   Button
+=========================================== */
+
+.button-row {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.button-row button {
+    min-width: 240px;
+    height: 50px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.button-row mat-icon {
+    margin-right: 8px;
+}
+
+/* ===========================================
+   Angular Material
+=========================================== */
+
+.mat-mdc-form-field {
+    width: 100%;
+}
+
+.mat-mdc-text-field-wrapper {
+    border-radius: 10px !important;
+}
+
+/* ===========================================
+   Responsive
+=========================================== */
+
+@media (max-width: 768px) {
+
+    .content {
+        padding: 15px;
+    }
+
+    .row,
+    .two-column {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .button-row button {
+        width: 100%;
+    }
+
+    .class-card {
+        padding: 15px;
+    }
+
+}

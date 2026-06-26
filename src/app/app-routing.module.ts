@@ -21,6 +21,12 @@ export const routes: Routes = [
 
     // Signup route
     {path: 'signup', loadComponent: () => import('./components/sign-up/sign-up.component').then(m => m.SignupComponent)},
+
+    // Create class route
+    {path: 'create-class', loadComponent: () => import('./components/class/class.component').then(m => m.CreateClassComponent)},
+
+    // Class list route
+    {path: 'classes', loadComponent: () => import('./components/class-list/class-list.component').then(m => m.ClassListComponent)},
 ]
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

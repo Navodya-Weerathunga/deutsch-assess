@@ -1,0 +1,213 @@
+<div class="page-container">
+
+    <!-- Sidebar -->
+    <app-admin-navbar></app-admin-navbar>
+
+    <!-- Main Content -->
+    <div class="content">
+
+        <mat-card class="table-card">
+
+            <!-- Header -->
+            <div class="page-header">
+
+                <div class="title">
+
+                    <mat-icon>video_library</mat-icon>
+
+                    <span>Zoom Classes</span>
+
+                </div>
+
+                <button
+                    mat-raised-button
+                    color="primary"
+                    routerLink="/create-class">
+
+                    <mat-icon>add</mat-icon>
+
+                    Create New Class
+
+                </button>
+
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <!-- Table -->
+            <div class="table-container">
+
+                <table
+                    mat-table
+                    [dataSource]="classes"
+                    class="full-width-table">
+
+                    <!-- Date -->
+                    <ng-container matColumnDef="classDate">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Date
+                        </th>
+
+                        <td mat-cell *matCellDef="let c">
+                            {{ c.classDate | date:'dd/MM/yyyy' }}
+                        </td>
+
+                    </ng-container>
+
+                    <!-- Class Time -->
+                    <ng-container matColumnDef="classTime">
+
+                        <th mat-header-cell *matHeaderCellDef>
+
+                            Class Time
+
+                        </th>
+
+                        <td mat-cell *matCellDef="let c">
+
+                            {{ c.startTime }} - {{ c.endTime }}
+
+                        </td>
+
+                    </ng-container>
+
+                    <!-- Batch -->
+                    <ng-container matColumnDef="batch">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Batch
+                        </th>
+
+                        <td mat-cell *matCellDef="let c">
+                            {{ c.batch }}
+                        </td>
+
+                    </ng-container>
+
+                    <!-- Level -->
+                    <ng-container matColumnDef="level">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Level
+                        </th>
+
+                        <td mat-cell *matCellDef="let c">
+                            {{ c.level }}
+                        </td>
+
+                    </ng-container>
+
+                    <!-- Medium -->
+                    <ng-container matColumnDef="medium">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Medium
+                        </th>
+
+                        <td mat-cell *matCellDef="let c">
+                            {{ c.medium }}
+                        </td>
+
+                    </ng-container>
+
+                    <!-- Tutor -->
+                    <ng-container matColumnDef="tutor">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Tutor Incharged
+                        </th>
+
+                        <td mat-cell *matCellDef="let c">
+
+                            {{ c.tutor?.firstName }}
+                            {{ c.tutor?.lastName }}
+
+                        </td>
+
+                    </ng-container>
+
+                    <!-- Meeting Link -->
+                    <ng-container matColumnDef="meetingLink">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Meeting Link
+                        </th>
+
+                        <td mat-cell *matCellDef="let c">
+
+                            <a
+                                [href]="c.zoomJoinUrl"
+                                target="_blank">
+
+                                Join Meeting
+
+                            </a>
+
+                        </td>
+
+                    </ng-container>
+
+                    <!-- Meeting ID -->
+                    <ng-container matColumnDef="meetingId">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Meeting ID
+                        </th>
+
+                        <td mat-cell *matCellDef="let c">
+                            {{ c.zoomMeetingId }}
+                        </td>
+
+                    </ng-container>
+
+                    <!-- Actions -->
+                    <ng-container matColumnDef="actions">
+
+                        <th mat-header-cell *matHeaderCellDef>
+                            Actions
+                        </th>
+
+                        <td mat-cell *matCellDef="let c">
+
+                            <button
+                                mat-icon-button
+                                color="primary"
+                                (click)="editClass(c)">
+
+                                <mat-icon>edit</mat-icon>
+
+                            </button>
+
+                            <button
+                                mat-icon-button
+                                color="warn"
+                                (click)="deleteClass(c._id!)">
+
+                                <mat-icon>delete</mat-icon>
+
+                            </button>
+
+                        </td>
+
+                    </ng-container>
+
+                    <tr
+                        mat-header-row
+                        *matHeaderRowDef="displayedColumns">
+                    </tr>
+
+                    <tr
+                        mat-row
+                        *matRowDef="let row; columns: displayedColumns;">
+                    </tr>
+
+                </table>
+
+            </div>
+
+        </mat-card>
+
+    </div>
+
+</div>

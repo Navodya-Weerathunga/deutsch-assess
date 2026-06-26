@@ -31,6 +31,11 @@ console.log("webhookRoutes type:", typeof webhookRoutes);
 const userRoutes = require('./routes/user');
 app.use("/api/users", userRoutes);
 
+
+// ✅ Class Routes
+const classRoutes = require('./routes/class');
+app.use("/api/classes", classRoutes);
+
 // (Optional) Protected test route using auth middleware
 app.get("/protected", verifyToken, (req, res) => {
   res.json({ msg: "Protected route accessed successfully" });
