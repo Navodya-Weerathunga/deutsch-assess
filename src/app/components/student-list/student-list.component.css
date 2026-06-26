@@ -1,0 +1,138 @@
+.dashboard-container{
+
+    display:flex;
+
+    min-height:100vh;
+
+    background:#f5f8fc;
+
+}
+
+.content{
+
+    flex:1;
+
+    margin-left:260px;
+
+    padding:30px;
+
+}
+
+.page-container{
+
+    padding:35px;
+
+    background:#f5f8fc;
+
+    min-height:100vh;
+}
+
+.student-card{
+
+    border-radius:18px;
+
+    padding:30px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+}
+
+.header h2{
+
+    color:#0d47a1;
+
+    font-weight:700;
+
+    margin-bottom:5px;
+}
+
+.header p{
+
+    color:#666;
+}
+
+.search-box{
+
+    width:320px;
+
+    margin-bottom:25px;
+}
+
+.search-box mat-form-field{
+
+    width:100%;
+}
+
+table{
+
+    width:100%;
+}
+
+th{
+
+    background:#0d47a1;
+
+    color:white;
+
+    font-weight:600;
+
+    font-size:15px;
+}
+
+td{
+
+    padding:18px 10px;
+}
+
+.status{
+
+    padding:6px 14px;
+
+    border-radius:20px;
+
+    color:white;
+
+    font-size:13px;
+
+    font-weight:600;
+}
+
+.ongoing{
+
+    background:#2e7d32;
+}
+
+.completed{
+
+    background:#1565c0;
+}
+
+.withdrew{
+
+    background:#d32f2f;
+}
+
+.uncertain{
+
+    background:#ef6c00;
+}
+
+button{
+
+    margin-right:6px;
+}
+
+.table-responsive{
+
+    overflow:auto;
+}

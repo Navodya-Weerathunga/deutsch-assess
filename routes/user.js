@@ -7,7 +7,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const transporter = require('../config/emailConfig');
 const User = require('../models/User');
-const Course = require('../models/Course');
 const { verifyToken, isAdmin } = require('../middleware/auth');
 const checkRole = require('../middleware/checkRloe');
 
@@ -49,7 +48,7 @@ async function generatePassword(role, regNo) {
   // map roles to prefixes
   const prefixMap = {
     STUDENT: "Student",
-    TEACHER: "Teacher",
+    TUTOR: "Tutor",
     ADMIN: "Admin"
   };
 
@@ -67,137 +66,174 @@ async function generatePassword(role, regNo) {
   return password;
 }
 
-// Get tutors by student level + medium
-router.get("/tutors", async (req, res) => {
+// ======================================================
+// Get available tutors
+// ======================================================
+
+router.get("/available-tutors", async (req, res) => {
   try {
-    const { level, medium } = req.query;
 
-    if (!level || !medium) {
-      return res.status(400).json({ msg: "Level and medium are required" });
+    let { medium, assignedCourses, batch } = req.query;
+
+    if (!medium || !assignedCourses || !batch) {
+      return res.status(400).json({
+        msg: "Medium, assignedCourses and batch are required"
+      });
     }
 
-    // 1️⃣ Find the course for this level
-    const course = await Course.findOne({ title: level }); // assuming title = level like "A1"
-    if (!course) {
-      return res.status(404).json({ msg: "No course found for this level" });
-    }
-
-    // 2️⃣ Find tutor who teach this course & match medium
-    const teachers = await User.find({
-      role: "TUTOR",
-      medium: { $in: [medium] },
-      assignedCourses: { $in: [course._id] }
-    }).select("name email regNo medium assignedCourses");
-
-    if (!teachers || teachers.length === 0) {
-      return res.status(404).json({ msg: "No tutors found for this level and medium" });
-    }
-
-    res.json(teachers);
-  } catch (err) {
-    console.error("Error fetching tutors:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// Get tutors by student medium
-router.get("/tutorsByMedium", async (req, res) => {
-  try {
-    const { medium } = req.query;
-
-    if (!medium) {
-      return res.status(400).json({ msg: "Medium is required" });
-    }
+    // Convert to arrays if a single value is received
+    medium = Array.isArray(medium) ? medium : [medium];
+    assignedCourses = Array.isArray(assignedCourses)
+      ? assignedCourses
+      : [assignedCourses];
+    batch = Array.isArray(batch) ? batch : [batch];
 
     const tutors = await User.find({
-      role: "TUTOR",
-      medium: { $in: [medium] }
-    }).select("name email regNo medium assignedCourses");
 
-    if (!tutors || tutors.length === 0) {
-      return res.status(404).json({ msg: "No tutors found for this medium" });
-    }
+      role: "TUTOR",
+
+      medium: { $in: medium },
+
+      assignedCourses: { $in: assignedCourses },
+
+      batch: { $in: batch }
+
+    }).select(
+      "_id firstName lastName email regNo medium batch assignedCourses"
+    );
 
     res.json(tutors);
+
   } catch (err) {
+
     console.error("Error fetching tutors:", err);
+
     res.status(500).json({ error: err.message });
+
   }
 });
 
 
-// ✅ Signup
+// ======================================================
+// Signup
+// ======================================================
+
 router.post("/signup", async (req, res) => {
+
   try {
+
     const {
-        firstName,
-        lastName,
-        email,
-        role,
-        medium,
-        batch,
-        plan,
-        status,
-        tutorIncharged,
-        assignedCourses,
-        createdAt
+
+      firstName,
+      lastName,
+      email,
+      role,
+      medium,
+      batch,
+      plan,
+      status,
+      tutorIncharged,
+      assignedCourses
+
     } = req.body;
 
-    const regNo = await generateRegNo(role);  
-    const password = await generatePassword(role, regNo); // generate random password
-    
+    const regNo = await generateRegNo(role);
+
+    const password = await generatePassword(role, regNo);
+
     let user = await User.findOne({ email });
-    if (user) return res.status(400).json({ msg: "User already exists" });
+
+    if (user) {
+      return res.status(400).json({
+        msg: "User already exists"
+      });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     user = new User({
-      regNo,   // <-- assign here
+
+      regNo,
       firstName,
       lastName,
       email,
       password: hashedPassword,
-      role,
+      role
+
     });
 
+    // ============================
+    // STUDENT
+    // ============================
+
     if (user.role === "STUDENT") {
-      user.assignedCourses = assignedCourses;
-      user.batch = batch;
+
       user.medium = medium;
-      user.status = "UNCERTAIN";
+      user.batch = batch;
       user.plan = plan;
-      user.tutorIncharged = tutorIncharged; 
-      
-      // Tutor Incharge logic
+      user.status = status;
+      user.assignedCourses = assignedCourses;
+
+      // Use tutor selected from frontend
       if (tutorIncharged) {
-        // case 1: frontend provided teacher id
+
         user.tutorIncharged = tutorIncharged;
-      } else {
-        // case 2: backend finds one automatically
-        const course = await Course.findOne({ level });
-        if (!course) {
-          return res.status(400).json({ msg: "No course found for this level" });
-        }
 
-        const teacher = await User.findOne({
+      }
+
+      // Otherwise automatically assign one
+      else {
+
+        const tutors = await User.find({
+
           role: "TUTOR",
-          medium: { $in: [medium] },
-          assignedCourses: course._id
-        });
 
-        if (teacher) {
-          user.tutorIncharged = teacher._id;
-        } else {
-          return res.status(400).json({ msg: "No teacher found for this level and medium" });
+          medium: {
+            $in: Array.isArray(medium)
+              ? medium
+              : [medium]
+          },
+
+          assignedCourses: {
+            $in: Array.isArray(assignedCourses)
+              ? assignedCourses
+              : [assignedCourses]
+          },
+
+          batch: {
+            $in: Array.isArray(batch)
+              ? batch
+              : [batch]
+          }
+
+        }).select("_id");
+
+        if (!tutors.length) {
+
+          return res.status(400).json({
+            msg: "No tutor found for the selected Medium, Batch and Course."
+          });
+
         }
+
+        user.tutorIncharged = tutors[0]._id;
+
       }
 
     }
 
+    // ============================
+    // TUTOR
+    // ============================
+
     else if (user.role === "TUTOR") {
-      user.batch = batch;
+
       user.medium = medium;
-      user.assignedCourses = assignedCourses; // Assign courses if provided
+
+      user.batch = batch;
+
+      user.assignedCourses = assignedCourses;
+
     }
 
     await user.save();
@@ -212,7 +248,7 @@ router.post("/signup", async (req, res) => {
       subject: "Welcome to Learn Deutsch Student Portal 🎉",
       html: `
         <div style="font-family: Arial, sans-serif; color: #000000; line-height: 1.6;">
-          <p>Hello ${user.name},</p>
+          <p>Hello ${user.firstName} ${user.lastName},</p>
 
           <p>You have successfully registered to the <strong>Learn Deutsch Student Portal</strong>. Here are your login credentials:</p>
 

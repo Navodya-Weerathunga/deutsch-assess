@@ -4,11 +4,15 @@ const app = express();
 const connectDB = require('./config/db');
 const cors = require('cors');
 const { verifyToken } = require("./middleware/auth");
+const cookieParser = require('cookie-parser');
 
 const allowedOrigins = ["http://localhost:4200"];
 
 // Connect to MongoDB
 connectDB();
+
+// Use cookie parser middleware
+app.use(cookieParser());
 
 app.use(express.json());
 

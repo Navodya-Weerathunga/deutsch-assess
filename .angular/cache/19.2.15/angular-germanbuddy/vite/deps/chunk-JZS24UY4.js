@@ -5,13 +5,16 @@ import {
   ɵɵdefineNgModule
 } from "./chunk-KLFIOOKH.js";
 
-// node_modules/@angular/cdk/fesm2022/scrolling-BkvA05C8.mjs
-var RtlScrollAxisType;
-(function(RtlScrollAxisType2) {
-  RtlScrollAxisType2[RtlScrollAxisType2["NORMAL"] = 0] = "NORMAL";
-  RtlScrollAxisType2[RtlScrollAxisType2["NEGATED"] = 1] = "NEGATED";
-  RtlScrollAxisType2[RtlScrollAxisType2["INVERTED"] = 2] = "INVERTED";
-})(RtlScrollAxisType || (RtlScrollAxisType = {}));
+// node_modules/@angular/cdk/fesm2022/test-environment-CT0XxPyp.mjs
+function _isTestEnvironment() {
+  return (
+    // @ts-ignore
+    typeof __karma__ !== "undefined" && !!__karma__ || // @ts-ignore
+    typeof jasmine !== "undefined" && !!jasmine || // @ts-ignore
+    typeof jest !== "undefined" && !!jest || // @ts-ignore
+    typeof Mocha !== "undefined" && !!Mocha
+  );
+}
 
 // node_modules/@angular/cdk/fesm2022/platform.mjs
 var PlatformModule = class _PlatformModule {
@@ -74,13 +77,8 @@ function getSupportedInputTypes() {
   return supportedInputTypes;
 }
 
-// node_modules/@angular/cdk/fesm2022/boolean-property-DaaVhX5A.mjs
-function coerceBooleanProperty(value) {
-  return value != null && `${value}` !== "false";
-}
-
 export {
-  getSupportedInputTypes,
-  coerceBooleanProperty
+  _isTestEnvironment,
+  getSupportedInputTypes
 };
-//# sourceMappingURL=chunk-L4LRRIN4.js.map
+//# sourceMappingURL=chunk-JZS24UY4.js.map

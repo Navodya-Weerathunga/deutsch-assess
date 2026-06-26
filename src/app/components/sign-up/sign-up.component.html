@@ -1,0 +1,341 @@
+<div class="signup-page">
+
+    <mat-card class="signup-card">
+
+        <div class="header">
+
+            <h2>Register New User</h2>
+
+            <p>Create a new user account for Deutsch-Assess</p>
+
+        </div>
+
+        <form [formGroup]="signupForm" (ngSubmit)="registerUser()">
+
+            <!-- ================= Role ================= -->
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <mat-form-field appearance="outline" class="w-100">
+
+                        <mat-label>Role</mat-label>
+
+                        <mat-select formControlName="role">
+
+                            <mat-option value="ADMIN">ADMIN</mat-option>
+
+                            <mat-option value="TUTOR">TUTOR</mat-option>
+
+                            <mat-option value="STUDENT">STUDENT</mat-option>
+
+                        </mat-select>
+
+                    </mat-form-field>
+
+                </div>
+
+            </div>
+
+            <!-- ================= Name ================= -->
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+
+                    <mat-form-field appearance="outline" class="w-100">
+
+                        <mat-label>First Name</mat-label>
+
+                        <input
+                            matInput
+                            formControlName="firstName">
+
+                    </mat-form-field>
+
+                </div>
+
+                <div class="col-md-6 mb-3">
+
+                    <mat-form-field appearance="outline" class="w-100">
+
+                        <mat-label>Last Name</mat-label>
+
+                        <input
+                            matInput
+                            formControlName="lastName">
+
+                    </mat-form-field>
+
+                </div>
+
+            </div>
+
+            <!-- ================= Email ================= -->
+
+            <div class="row">
+
+                <div class="col-12 mb-3">
+
+                    <mat-form-field appearance="outline" class="w-100">
+
+                        <mat-label>Email</mat-label>
+
+                        <input
+                            matInput
+                            type="email"
+                            formControlName="email">
+
+                    </mat-form-field>
+
+                </div>
+
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- STUDENT & TUTOR -->
+            <!-- ===================================================== -->
+
+            <div *ngIf="isStudentOrTutor">
+
+                <mat-divider class="mb-4"></mat-divider>
+
+                <h5 class="section-title">
+
+                    Academic Information
+
+                </h5>
+
+                <!-- ================= Medium ================= -->
+
+                <div class="mb-4">
+
+                    <label class="field-label">
+
+                        Medium
+
+                    </label>
+
+                    <div class="checkbox-group">
+
+                        <mat-checkbox
+                            *ngFor="let medium of mediums"
+                            (change)="onMediumChange($event, medium)"
+                            [checked]="selectedMediums.includes(medium)">
+
+                            {{ medium }}
+
+                        </mat-checkbox>
+
+                    </div>
+
+                </div>
+
+                <!-- ================= Batch ================= -->
+
+                <div class="mb-4">
+
+                    <mat-form-field appearance="outline" class="w-100">
+
+                        <mat-label>
+
+                            Batches (comma separated)
+
+                        </mat-label>
+
+                        <input
+                            matInput
+                            placeholder="Example : 1,2,3"
+                            formControlName="batch">
+
+                    </mat-form-field>
+
+                </div>
+
+                <!-- ================= Assigned Courses ================= -->
+
+                <div class="mb-4">
+
+                    <label class="field-label">
+
+                        Assigned Courses
+
+                    </label>
+
+                    <div class="checkbox-group">
+
+                        <mat-checkbox
+                            *ngFor="let course of courses"
+                            (change)="onCourseChange($event, course)"
+                            [checked]="selectedCourses.includes(course)">
+
+                            {{ course }}
+
+                        </mat-checkbox>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ===================================================== -->
+            <!-- STUDENT ONLY -->
+            <!-- ===================================================== -->
+
+            <div *ngIf="isStudent">
+
+                <mat-divider class="mb-4"></mat-divider>
+
+                <h5 class="section-title">
+
+                    Student Information
+
+                </h5>
+
+                <div class="row">
+
+                    <!-- Plan -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <mat-form-field appearance="outline" class="w-100">
+
+                            <mat-label>Plan</mat-label>
+
+                            <mat-select formControlName="plan">
+
+                                <mat-option value="PLATINUM">
+
+                                    PLATINUM
+
+                                </mat-option>
+
+                                <mat-option value="SILVER">
+
+                                    SILVER
+
+                                </mat-option>
+
+                            </mat-select>
+
+                        </mat-form-field>
+
+                    </div>
+
+                    <!-- Status -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <mat-form-field appearance="outline" class="w-100">
+
+                            <mat-label>Status</mat-label>
+
+                            <mat-select formControlName="status">
+
+                                <mat-option value="UNCERTAIN">
+
+                                    UNCERTAIN
+
+                                </mat-option>
+
+                                <mat-option value="ONGOING">
+
+                                    ONGOING
+
+                                </mat-option>
+
+                                <mat-option value="COMPLETED">
+
+                                    COMPLETED
+
+                                </mat-option>
+
+                                <mat-option value="WITHDREW">
+
+                                    WITHDREW
+
+                                </mat-option>
+
+                            </mat-select>
+
+                        </mat-form-field>
+
+                    </div>
+
+                </div>
+
+                <!-- Tutor -->
+
+                <div class="row">
+
+                    <div class="col-12 mb-3">
+
+                        <mat-form-field appearance="outline" class="w-100">
+
+                            <mat-label>
+
+                                Tutor Incharged
+
+                            </mat-label>
+
+                            <mat-select formControlName="tutorIncharged">
+
+                                <mat-option
+                                    *ngFor="let tutor of tutors"
+                                    [value]="tutor._id">
+
+                                    {{ tutor.firstName }}
+                                    {{ tutor.lastName }}
+                                    ({{ tutor.regNo }})
+
+                                </mat-option>
+
+                            </mat-select>
+
+                        </mat-form-field>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ================= Buttons ================= -->
+
+            <div class="button-group">
+
+                <button
+                    mat-stroked-button
+                    color="warn"
+                    type="button"
+                    routerLink="/admin/students">
+
+                    Cancel
+
+                </button>
+
+                <button
+                    mat-raised-button
+                    color="primary"
+                    type="submit"
+                    [disabled]="signupForm.invalid || isLoading">
+
+                    <mat-icon>
+
+                        person_add
+
+                    </mat-icon>
+
+                    {{ isLoading ? 'Registering...' : 'Register User' }}
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </mat-card>
+
+</div>
