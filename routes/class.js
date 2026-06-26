@@ -11,15 +11,49 @@ const zoomService = require("../services/zoom.service");
 const { verifyToken } = require("../middleware/auth");
 const checkRole = require("../middleware/checkRloe");
 
+const fs = require("fs");
+const uploadTranscript = require("../middleware/uploadTranscripts");
+
+// Update class status automatically
+
+function updateClassStatus(classDoc) {
+
+    const now = new Date();
+
+    const start = new Date(classDoc.classDate);
+    const end = new Date(classDoc.classDate);
+
+    const [startHour, startMinute] = classDoc.startTime.split(":");
+    const [endHour, endMinute] = classDoc.endTime.split(":");
+
+    start.setHours(Number(startHour), Number(startMinute), 0, 0);
+    end.setHours(Number(endHour), Number(endMinute), 0, 0);
+
+    if (now < start) {
+
+        classDoc.status = "UPCOMING";
+
+    }
+
+    else if (now >= start && now <= end) {
+
+        classDoc.status = "ONGOING";
+
+    }
+
+    else {
+
+        classDoc.status = "COMPLETED";
+
+    }
+
+}
 
 // =====================================================
 // Get Available Tutors
 // =====================================================
 
-router.get(
-  "/available-tutors",
-  verifyToken,
-  checkRole("ADMIN"),
+router.get("/available-tutors", verifyToken, checkRole("ADMIN"),
   async (req, res) => {
 
     try {
@@ -117,7 +151,7 @@ router.post(
       // ----------------------------------------
 
       let newClass;
-      
+
       try {
 
         console.log("Saving class...");
@@ -287,10 +321,24 @@ router.get(
     try {
 
       const classes = await Class.find()
-
         .populate("tutor", "firstName lastName regNo")
-
         .sort({ classDate: -1 });
+
+      // Update status automatically
+      for (const classDoc of classes) {
+
+        const oldStatus = classDoc.status;
+
+        updateClassStatus(classDoc);
+
+        // Save only if changed
+        if (oldStatus !== classDoc.status) {
+
+          await classDoc.save();
+
+        }
+
+      }
 
       res.json(classes);
 
@@ -299,14 +347,157 @@ router.get(
     catch (err) {
 
       res.status(500).json({
-
         error: err.message
-
       });
 
     }
 
   }
 );
+
+// =====================================================
+// Upload Transcript
+// =====================================================
+
+router.post(
+
+    "/:id/upload-transcript",
+
+    verifyToken,
+
+    checkRole("ADMIN"),
+
+    uploadTranscript.single("transcript"),
+
+    async (req, res) => {
+
+        try {
+
+            const classId = req.params.id;
+
+            const classDoc = await Class.findById(classId);
+
+            if (!classDoc) {
+
+                return res.status(404).json({
+
+                    msg: "Class not found."
+
+                });
+
+            }
+
+            if (!req.file) {
+
+                return res.status(400).json({
+
+                    msg: "Transcript file is required."
+
+                });
+
+            }
+
+            const transcriptText = fs.readFileSync(
+
+                req.file.path,
+
+                "utf8"
+
+            );
+
+            classDoc.transcript = transcriptText;
+
+            classDoc.transcriptLanguage = "Unknown";
+
+            classDoc.transcriptUploadedAt = new Date();
+
+            classDoc.assessmentGenerated = false;
+
+            await classDoc.save();
+
+            res.json({
+
+                msg: "Transcript uploaded successfully.",
+
+                class: classDoc
+
+            });
+
+        }
+
+        catch (err) {
+
+            console.error(err);
+
+            res.status(500).json({
+
+                error: err.message
+
+            });
+
+        }
+
+    }
+
+);
+
+const transcriptService = require("../services/transcript.service");
+
+router.post(
+    "/:id/generate-assessment",
+    verifyToken,
+    checkRole("ADMIN"),
+    async (req, res) => {
+
+        try {
+
+            const classDoc = await Class.findById(req.params.id);
+
+            if (!classDoc) {
+
+                return res.status(404).json({
+                    msg: "Class not found."
+                });
+
+            }
+
+            if (!classDoc.transcript) {
+
+                return res.status(400).json({
+                    msg: "Please upload a transcript first."
+                });
+
+            }
+
+            // Clean transcript
+            const cleanedTranscript =
+                transcriptService.cleanTranscript(classDoc.transcript);
+
+            console.log("========== CLEANED TRANSCRIPT ==========");
+            console.log(cleanedTranscript);
+
+            res.json({
+
+                message: "Transcript cleaned successfully.",
+
+                cleanedTranscript
+
+            });
+
+        }
+
+        catch (err) {
+
+            console.error(err);
+
+            res.status(500).json({
+                error: err.message
+            });
+
+        }
+
+    }
+);
+
 
 module.exports = router;

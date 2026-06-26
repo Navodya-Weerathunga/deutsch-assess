@@ -15,7 +15,14 @@ const ClassSchema = new mongoose.Schema({
     zoomMeetingId: String,
     zoomJoinUrl: String,
     zoomStartUrl: String,
-    createdAt: {type: Date, default: Date.now}
+    createdAt: {type: Date, default: Date.now},
+    status: {type: String, enum: ["UPCOMING", "ONGOING", "COMPLETED"], default: "UPCOMING"},
+
+    // Transcript related fields
+    transcript: {type: String, default: null },
+    transcriptLanguage: {type: String, default: null },
+    transcriptUploadedAt: {type: Date },
+    assessmentGenerated: {type: Boolean, default: false }
 
 });
 

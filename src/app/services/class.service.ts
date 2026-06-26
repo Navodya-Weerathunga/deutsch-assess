@@ -104,4 +104,32 @@ export class ClassService {
 
   }
 
+    // =====================================
+    // Upload Transcript
+    // =====================================
+
+    uploadTranscript(
+    classId: string,
+    transcriptFile: File
+    ): Observable<any> {
+
+    const formData = new FormData();
+
+    formData.append("transcript", transcriptFile);
+
+    return this.http.post(
+
+        `${this.apiUrl}/${classId}/upload-transcript`,
+
+        formData,
+
+        {
+        withCredentials: true
+        }
+
+    );
+
+    }
+
+
 }
