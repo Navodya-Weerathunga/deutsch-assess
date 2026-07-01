@@ -55,7 +55,7 @@ export class CreateClassComponent {
 
   classData = {
     topic: '',
-    classDate: '',
+    classDate: null as Date | null,
     startTime: '',
     endTime: '',
     batch: '',
@@ -108,28 +108,29 @@ export class CreateClassComponent {
 
   createMeeting(): void {
 
-    this.classService.createClass(this.classData)
+    if (!this.classData.classDate) {
+      alert("Please select a class date.");
+      return;
+    }
 
+    const payload = {
+      ...this.classData,
+      classDate: new Date(
+        this.classData.classDate.getTime() -
+        this.classData.classDate.getTimezoneOffset() * 60000
+      ).toISOString()
+    };
+
+    this.classService.createClass(payload)
       .subscribe({
-
         next: (response) => {
-
           alert("Zoom Meeting Created Successfully!");
-
-          console.log(response);
-
           this.resetForm();
-
         },
-
         error: (err) => {
-
           console.error(err);
-
           alert(err.error?.msg || "Failed to create Zoom Meeting.");
-
         }
-
       });
 
   }
@@ -142,7 +143,7 @@ export class CreateClassComponent {
 
     this.classData = {
       topic: '',
-      classDate: '',
+      classDate: null,
       startTime: '',
       endTime: '',
       batch: '',

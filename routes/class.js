@@ -18,38 +18,65 @@ const assessmentService = require("../services/assessment.service");
 const fs = require("fs");
 const uploadTranscript = require("../middleware/uploadTranscripts");
 
+// =====================================================
+// Get Current Time in Sri Lanka
+// =====================================================
+
+function getSriLankaNow() {
+    return new Date(
+        new Date().toLocaleString("en-US", {
+            timeZone: "Asia/Colombo"
+        })
+    );
+}
+
 // Update class status automatically
 
 function updateClassStatus(classDoc) {
 
-    const now = new Date();
+    // Current time in Sri Lanka
+    const now = new Date(
+        new Date().toLocaleString("en-US", {
+            timeZone: "Asia/Colombo"
+        })
+    );
 
-    const start = new Date(classDoc.classDate);
-    const end = new Date(classDoc.classDate);
+    // Get only the calendar date from MongoDB
+    const year = classDoc.classDate.getUTCFullYear();
+    const month = String(classDoc.classDate.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(classDoc.classDate.getUTCDate() + 1).padStart(2, "0");
 
-    const [startHour, startMinute] = classDoc.startTime.split(":");
-    const [endHour, endMinute] = classDoc.endTime.split(":");
+    // Build start and end datetime in Sri Lanka
+    const start = new Date(
+        `${year}-${month}-${day}T${classDoc.startTime}:00+05:30`
+    );
 
-    start.setHours(Number(startHour), Number(startMinute), 0, 0);
-    end.setHours(Number(endHour), Number(endMinute), 0, 0);
+    const end = new Date(
+        `${year}-${month}-${day}T${classDoc.endTime}:00+05:30`
+    );
+
+    console.log("-----------------------------");
+    console.log("Now   :", now);
+    console.log("Start :", start);
+    console.log("End   :", end);
 
     if (now < start) {
 
         classDoc.status = "UPCOMING";
 
     }
-
     else if (now >= start && now <= end) {
 
         classDoc.status = "ONGOING";
 
     }
-
     else {
 
         classDoc.status = "COMPLETED";
 
     }
+
+    return classDoc.status;
 
 }
 
@@ -203,11 +230,18 @@ router.post(
 
       });
 
-
-
       // ----------------------------------------
       // Send Email
       // ----------------------------------------
+
+      // Format date to DD/MM/YYYY
+      
+      const formattedDate = new Date(classDate).toLocaleDateString("en-GB", {
+          timeZone: "Asia/Colombo",
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric"
+      });
 
       for (const student of students) {
 
@@ -233,7 +267,7 @@ router.post(
 
                 <td><b>Date</b></td>
 
-                <td>${classDate}</td>
+                <td>${formattedDate}</td>
 
               </tr>
 
