@@ -51,6 +51,30 @@ model.fit(X_train, y_train)
 # Predict
 predictions = model.predict(X_test)
 
+# Visualize
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(6,6))
+
+plt.scatter(
+    y_test,
+    predictions,
+    alpha=0.7
+)
+
+plt.plot(
+    [y_test.min(), y_test.max()],
+    [y_test.min(), y_test.max()],
+    'r--'
+)
+
+plt.xlabel("Actual Score")
+plt.ylabel("Predicted Score")
+plt.title("Random Forest: Actual vs Predicted Scores")
+
+plt.tight_layout()
+plt.show()
+
 # Metrics
 mae = mean_absolute_error(
     y_test,
