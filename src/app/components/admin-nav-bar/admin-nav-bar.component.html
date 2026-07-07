@@ -1,7 +1,6 @@
-<!-- Admin nav bar -->
-
 <div class="sidebar">
 
+    <!-- Logo -->
     <div class="logo">
 
         <h2>DEUTSCH</h2>
@@ -10,6 +9,7 @@
 
     </div>
 
+    <!-- Navigation -->
     <ul class="nav-links">
 
         <li routerLink="/student-list" routerLinkActive="active">
@@ -43,5 +43,18 @@
         </li>
 
     </ul>
+
+    <!-- Logout -->
+    <div class="logout-section">
+
+        <li class="logout" (click)="logout()">
+
+            <mat-icon>logout</mat-icon>
+
+            <span>Logout</span>
+
+        </li>
+
+    </div>
 
 </div>
