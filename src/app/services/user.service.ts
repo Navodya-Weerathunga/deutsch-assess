@@ -166,4 +166,14 @@ export class UserService {
 
     }
 
+    // ==========================
+    // Get All Tutors (Admin only)
+    // ==========================
+
+    getAllTutors(): Observable<User[]> {
+
+      return this.http.get<User[]>(`${this.apiUrl}/tutors`, { withCredentials: true }); 
+
+    }
+
 }

@@ -1,0 +1,153 @@
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <app-admin-navbar></app-admin-navbar>
+
+    <!-- Main Content -->
+    <div class="content">
+
+        <div class="page-container">
+
+            <mat-card class="tutor-card">
+
+                <div class="header">
+
+                    <div>
+
+                        <h2>Tutor Management</h2>
+
+                        <p>Manage all registered tutors</p>
+
+                    </div>
+
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        routerLink="/signup">
+
+                        <mat-icon>person_add</mat-icon>
+
+                        Register New Tutor
+
+                    </button>
+
+                </div>
+
+                <div class="search-box">
+
+                    <mat-form-field appearance="outline">
+
+                        <mat-label>Search Tutors</mat-label>
+
+                        <input
+                            matInput
+                            placeholder="Search by Reg No or Name">
+
+                        <mat-icon matSuffix>search</mat-icon>
+
+                    </mat-form-field>
+
+                </div>
+
+                <div class="table-responsive">
+
+                    <table mat-table [dataSource]="tutors" class="mat-elevation-z0">
+
+                        <!-- Reg No -->
+                        <ng-container matColumnDef="regNo">
+
+                            <th mat-header-cell *matHeaderCellDef>Reg No</th>
+
+                            <td mat-cell *matCellDef="let tutor">
+                                {{tutor.regNo}}
+                            </td>
+
+                        </ng-container>
+
+                        <!-- Name -->
+                        <ng-container matColumnDef="name">
+
+                            <th mat-header-cell *matHeaderCellDef>Name</th>
+
+                            <td mat-cell *matCellDef="let tutor">
+                                {{tutor.firstName}} {{tutor.lastName}}
+                            </td>
+
+                        </ng-container>
+
+                        <!-- Email -->
+                        <ng-container matColumnDef="email">
+
+                            <th mat-header-cell *matHeaderCellDef>Email</th>
+
+                            <td mat-cell *matCellDef="let tutor">
+                                {{tutor.email}}
+                            </td>
+
+                        </ng-container>
+
+                        <!-- Level -->
+                        <ng-container matColumnDef="level">
+
+                            <th mat-header-cell *matHeaderCellDef>Level</th>
+
+                            <td mat-cell *matCellDef="let tutor">
+
+                                {{tutor.assignedCourses.join(', ')}}
+
+                            </td>
+
+                        </ng-container>
+
+                        <!-- Medium -->
+                        <ng-container matColumnDef="medium">
+
+                            <th mat-header-cell *matHeaderCellDef>Medium</th>
+
+                            <td mat-cell *matCellDef="let tutor">
+
+                                {{tutor.medium}}
+
+                            </td>
+
+                        </ng-container>
+
+                        <!-- Actions -->
+                        <ng-container matColumnDef="actions">
+
+                            <th mat-header-cell *matHeaderCellDef>Actions</th>
+
+                            <td mat-cell *matCellDef="let tutor">
+
+                                <button
+                                    mat-mini-fab
+                                    color="primary">
+
+                                    <mat-icon>edit</mat-icon>
+
+                                </button>
+
+                                <button
+                                    mat-mini-fab
+                                    color="accent"
+                                    class="ms-2">
+
+                                    <mat-icon>update</mat-icon>
+
+                                </button>
+
+                            </td>
+
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                    </table>
+
+                </div>
+
+            </mat-card>
+
+</div>

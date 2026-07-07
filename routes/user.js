@@ -371,6 +371,17 @@ router.get("/students", verifyToken, checkRole('ADMIN'), async (req, res) => {
   }
 });
 
+// Get all tutors (Admin only)
+router.get("/tutors", verifyToken, checkRole('ADMIN'), async (req, res) => {
+  try {
+    const tutors = await User.find({ role: "TUTOR" }).select("-password");
+    res.json(tutors);
+  }
+  catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
 
 

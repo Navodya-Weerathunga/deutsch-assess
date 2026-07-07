@@ -8,7 +8,7 @@ export const routes: Routes = [
     {path: 'home', loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent)},
 
     // Home route
-    {path: 'home', loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent)},
+    {path: '', loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent)},
 
     // Login route
     {path: 'login', loadComponent: () => import('./components/login/login.component').then(m => m.LoginComponent)},
@@ -27,6 +27,9 @@ export const routes: Routes = [
 
     // Class list route
     {path: 'classes', loadComponent: () => import('./components/class-list/class-list.component').then(m => m.ClassListComponent)},
+
+    // Tutor list route
+    {path: 'tutor-list', loadComponent: () => import('./components/tutor-list/tutor-list.component').then(m => m.TutorListComponent)},
 ]
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
