@@ -1,0 +1,129 @@
+<!-- Student Navigation Bar -->
+
+<div class="sidebar">
+
+    <!-- Logo -->
+
+    <div class="logo">
+
+        <h2>DEUTSCH</h2>
+
+        <span>ASSESS</span>
+
+    </div>
+
+
+    <!-- Navigation -->
+
+    <ul class="nav-links">
+
+        <!-- Dashboard -->
+
+        <li
+            routerLink="/student/dashboard"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }">
+
+            <mat-icon>
+                dashboard
+            </mat-icon>
+
+            <span>
+                Dashboard
+            </span>
+
+        </li>
+
+
+        <!-- My Classes -->
+
+        <li
+            routerLink="/student/classes"
+            routerLinkActive="active">
+
+            <mat-icon>
+                calendar_month
+            </mat-icon>
+
+            <span>
+                My Classes
+            </span>
+
+        </li>
+
+
+        <!-- Assessments -->
+
+        <li
+            routerLink="/student/assessments"
+            routerLinkActive="active">
+
+            <mat-icon>
+                assignment
+            </mat-icon>
+
+            <span>
+                Assessments
+            </span>
+
+        </li>
+
+
+        <!-- Results -->
+
+        <li
+            routerLink="/student/results"
+            routerLinkActive="active">
+
+            <mat-icon>
+                bar_chart
+            </mat-icon>
+
+            <span>
+                My Results
+            </span>
+
+        </li>
+
+
+        <!-- Profile -->
+
+        <li
+            routerLink="/student/profile"
+            routerLinkActive="active">
+
+            <mat-icon>
+                account_circle
+            </mat-icon>
+
+            <span>
+                Profile
+            </span>
+
+        </li>
+
+    </ul>
+
+
+    <!-- Logout -->
+
+    <div class="logout-section">
+
+        <button
+            type="button"
+            class="logout-button"
+            (click)="logout()">
+
+            <mat-icon>
+                logout
+            </mat-icon>
+
+            <span>
+                Logout
+            </span>
+
+        </button>
+
+    </div>
+
+</div>
