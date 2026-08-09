@@ -40,6 +40,10 @@ app.use("/api/classes", classRoutes);
 const assessmentRoutes = require('./routes/assessment');
 app.use("/api/assessments", assessmentRoutes);
 
+// ✅ Answer Routes
+const answerRoutes = require('./routes/answer');
+app.use("/api/answers", answerRoutes);
+
 // (Optional) Protected test route using auth middleware
 app.get("/protected", verifyToken, (req, res) => {
   res.json({ msg: "Protected route accessed successfully" });

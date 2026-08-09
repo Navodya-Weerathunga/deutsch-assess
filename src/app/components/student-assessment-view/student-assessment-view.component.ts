@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AssessmentService } from '../../services/assessment.service';
+import { AnswerService } from '../../services/answer.service';
 
 import { StudentNavbarComponent } from '../student-side-bar/student-side-bar.component';
 
@@ -46,7 +47,8 @@ export class StudentAssessmentViewComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private assessmentService: AssessmentService
+    private assessmentService: AssessmentService,
+    private answerService: AnswerService
   ) {}
 
 
@@ -59,6 +61,7 @@ export class StudentAssessmentViewComponent implements OnInit {
     const assessmentId =
       this.route.snapshot.paramMap.get('id');
 
+
     if (!assessmentId) {
 
       this.errorMessage =
@@ -68,7 +71,10 @@ export class StudentAssessmentViewComponent implements OnInit {
 
     }
 
-    this.loadAssessment(assessmentId);
+
+    this.loadAssessment(
+      assessmentId
+    );
 
   }
 
@@ -80,6 +86,9 @@ export class StudentAssessmentViewComponent implements OnInit {
   loadAssessment(id: string): void {
 
     this.isLoading = true;
+
+    this.errorMessage = '';
+
 
     this.assessmentService
       .getStudentAssessment(id)
@@ -97,6 +106,7 @@ export class StudentAssessmentViewComponent implements OnInit {
           this.isLoading = false;
 
         },
+
 
         error: (err) => {
 
@@ -127,7 +137,11 @@ export class StudentAssessmentViewComponent implements OnInit {
     const input =
       event.target as HTMLInputElement;
 
-    if (!input.files || input.files.length === 0) {
+
+    if (
+      !input.files ||
+      input.files.length === 0
+    ) {
 
       this.selectedFile = null;
 
@@ -135,11 +149,13 @@ export class StudentAssessmentViewComponent implements OnInit {
 
     }
 
-    const file = input.files[0];
+
+    const file =
+      input.files[0];
 
 
     // -----------------------------------
-    // Allowed file types
+    // Allowed File Types
     // -----------------------------------
 
     const allowedTypes = [
@@ -153,11 +169,16 @@ export class StudentAssessmentViewComponent implements OnInit {
     ];
 
 
-    if (!allowedTypes.includes(file.type)) {
+    if (
+      !allowedTypes.includes(
+        file.type
+      )
+    ) {
 
       alert(
         'Invalid file type. Please upload a PDF, JPG, or PNG file.'
       );
+
 
       input.value = '';
 
@@ -168,9 +189,47 @@ export class StudentAssessmentViewComponent implements OnInit {
     }
 
 
+    // -----------------------------------
+    // Optional File Size Check
+    // -----------------------------------
+
+    const maxFileSize =
+      10 * 1024 * 1024; // 10 MB
+
+
+    if (
+      file.size > maxFileSize
+    ) {
+
+      alert(
+        'File size must not exceed 10 MB.'
+      );
+
+
+      input.value = '';
+
+      this.selectedFile = null;
+
+      return;
+
+    }
+
+
+    // -----------------------------------
+    // Store Selected File
+    // -----------------------------------
+
     this.selectedFile = file;
 
     this.successMessage = '';
+
+    this.errorMessage = '';
+
+
+    console.log(
+      'Selected answer file:',
+      file.name
+    );
 
   }
 
@@ -180,6 +239,25 @@ export class StudentAssessmentViewComponent implements OnInit {
   // =====================================
 
   uploadAnswers(): void {
+
+    // -----------------------------------
+    // Check Assessment
+    // -----------------------------------
+
+    if (!this.assessment?._id) {
+
+      alert(
+        'Assessment information is not available.'
+      );
+
+      return;
+
+    }
+
+
+    // -----------------------------------
+    // Check File
+    // -----------------------------------
 
     if (!this.selectedFile) {
 
@@ -192,21 +270,133 @@ export class StudentAssessmentViewComponent implements OnInit {
     }
 
 
+    // -----------------------------------
+    // Confirmation
+    // -----------------------------------
+
+    const confirmed = confirm(
+      'Are you sure you want to submit your answers? You will not be able to submit this assessment again.'
+    );
+
+
+    if (!confirmed) {
+
+      return;
+
+    }
+
+
+    // -----------------------------------
+    // Start Upload
+    // -----------------------------------
+
+    this.isLoading = true;
+
+    this.errorMessage = '';
+
+    this.successMessage = '';
+
+
     console.log(
-      'Answer file selected:',
-      this.selectedFile
+      'Uploading answer file:',
+      this.selectedFile.name
     );
 
 
-    /*
-     * We will connect this button to the
-     * backend Answer submission endpoint
-     * after creating that endpoint.
-     */
+    // -----------------------------------
+    // Upload through AnswerService
+    // -----------------------------------
 
-    alert(
-      'Answer file selected successfully. Upload functionality will be connected next.'
-    );
+    this.answerService
+      .uploadAnswers(
+        this.assessment._id,
+        this.selectedFile
+      )
+      .subscribe({
+
+        // ---------------------------------
+        // Success
+        // ---------------------------------
+
+        next: (response) => {
+
+          console.log(
+            'Answer upload successful:',
+            response
+          );
+
+
+          this.isLoading = false;
+
+
+          this.successMessage =
+            response.msg ||
+            'Your answers have been uploaded successfully.';
+
+
+          // Clear selected file
+
+          this.selectedFile = null;
+
+
+          // Clear file input
+
+          const fileInput =
+            document.getElementById(
+              'answerFile'
+            ) as HTMLInputElement;
+
+
+          if (fileInput) {
+
+            fileInput.value = '';
+
+          }
+
+
+          alert(
+            'Your answers have been submitted successfully.'
+          );
+
+
+          // ---------------------------------
+          // Return to Assessment List
+          // ---------------------------------
+
+          this.router.navigate([
+            '/student/assessments'
+          ]);
+
+        },
+
+
+        // ---------------------------------
+        // Error
+        // ---------------------------------
+
+        error: (err) => {
+
+          console.error(
+            'Error uploading answers:',
+            err
+          );
+
+
+          this.isLoading = false;
+
+
+          this.errorMessage =
+            err.error?.msg ||
+            'Failed to upload your answers.';
+
+
+          alert(
+            this.errorMessage
+          );
+
+        }
+
+      });
 
   }
 
@@ -235,6 +425,7 @@ export class StudentAssessmentViewComponent implements OnInit {
       return 'No file selected';
 
     }
+
 
     return this.selectedFile.name;
 
