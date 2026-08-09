@@ -128,10 +128,19 @@ const AnswerSchema = new mongoose.Schema({
     // OCR
     // =========================================
 
-    ocrText: {
-        type: String,
-        default: ""
-    },
+    ocrAnswers: [
+        {
+            questionNo: {
+                type: Number,
+                required: true
+            },
+
+            answer: {
+                type: String,
+                default: ""
+            }
+        }
+    ],
 
     ocrStatus: {
         type: String,
