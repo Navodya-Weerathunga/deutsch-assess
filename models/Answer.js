@@ -122,7 +122,36 @@ const AnswerSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+
+    // =========================================
+    // OCR
+    // =========================================
+
+    ocrText: {
+        type: String,
+        default: ""
+    },
+
+    ocrStatus: {
+        type: String,
+        enum: [
+            "PENDING",
+            "PROCESSING",
+            "COMPLETED",
+            "FAILED"
+        ],
+        default: "PENDING"
+    },
+
+    ocrCompletedAt: {
+        type: Date
+    },
+
+    ocrError: {
+        type: String,
+        default: ""
+    },
 
 });
 
@@ -139,6 +168,7 @@ AnswerSchema.index(
     {
         unique: true
     }
+
 );
 
 
