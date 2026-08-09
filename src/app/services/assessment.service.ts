@@ -82,4 +82,19 @@ export class AssessmentService {
 
     }
 
+    // =====================================
+    // Get Student Assessment By ID
+    // =====================================
+
+    getStudentAssessment(id: string): Observable<any> {
+
+        return this.http.get<any>(
+            `${this.apiUrl}/student/${id}`,
+            {
+                withCredentials: true
+            }
+        );
+
+    }
+
 }

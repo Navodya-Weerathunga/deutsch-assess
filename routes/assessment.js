@@ -164,6 +164,144 @@ router.get(
 );
 
 // =====================================================
+// Get Assessment for Logged-in Student
+// =====================================================
+
+router.get(
+    "/student/:id",
+    verifyToken,
+    checkRole("STUDENT"),
+    async (req, res) => {
+
+        try {
+
+            // -----------------------------------------
+            // Get student
+            // -----------------------------------------
+
+            const student = await User.findById(req.user.id);
+
+            if (!student) {
+
+                return res.status(404).json({
+                    msg: "Student not found."
+                });
+
+            }
+
+            // -----------------------------------------
+            // Only ongoing students can access
+            // assessments
+            // -----------------------------------------
+
+            if (student.status !== "ONGOING") {
+
+                return res.status(403).json({
+                    msg: "Assessment access is available only for ongoing students."
+                });
+
+            }
+
+            // -----------------------------------------
+            // Find assessment
+            // -----------------------------------------
+
+            const assessment = await Assessment.findById(
+                req.params.id
+            ).populate({
+                path: "class",
+                select:
+                    "topic classDate startTime endTime batch medium level tutor"
+            });
+
+            if (!assessment) {
+
+                return res.status(404).json({
+                    msg: "Assessment not found."
+                });
+
+            }
+
+            // -----------------------------------------
+            // Check class exists
+            // -----------------------------------------
+
+            if (!assessment.class) {
+
+                return res.status(404).json({
+                    msg: "Class associated with this assessment was not found."
+                });
+
+            }
+
+            const classDoc = assessment.class;
+
+            // -----------------------------------------
+            // Check student's batch
+            // -----------------------------------------
+
+            const batchMatch =
+                student.batch.includes(classDoc.batch);
+
+            // -----------------------------------------
+            // Check student's medium
+            // -----------------------------------------
+
+            const mediumMatch =
+                student.medium.includes(classDoc.medium);
+
+            // -----------------------------------------
+            // Check student's level
+            // -----------------------------------------
+
+            const levelMatch =
+                student.assignedCourses.includes(classDoc.level);
+
+            // -----------------------------------------
+            // Verify student is allowed to access
+            // -----------------------------------------
+
+            if (
+                !batchMatch ||
+                !mediumMatch ||
+                !levelMatch
+            ) {
+
+                return res.status(403).json({
+                    msg: "You are not authorized to access this assessment."
+                });
+
+            }
+
+            // -----------------------------------------
+            // Return assessment
+            // -----------------------------------------
+
+            res.status(200).json(assessment);
+
+        }
+
+        catch (err) {
+
+            console.error(
+                "Error loading student assessment:",
+                err
+            );
+
+            res.status(500).json({
+
+                msg: "Failed to load assessment.",
+
+                error: err.message
+
+            });
+
+        }
+
+    }
+);
+
+// =====================================================
 // Get Assessment By ID
 // =====================================================
 

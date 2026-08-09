@@ -1,0 +1,502 @@
+<div class="dashboard-container">
+
+
+    <!-- Student Sidebar -->
+
+    <app-student-navbar></app-student-navbar>
+
+
+    <!-- Main Content -->
+
+    <div class="content">
+
+        <div class="page-container">
+
+
+            <!-- Back Button -->
+
+            <button
+                mat-button
+                class="back-button"
+                (click)="goBack()">
+
+                <mat-icon>
+                    arrow_back
+                </mat-icon>
+
+                Back to Assessments
+
+            </button>
+
+
+            <!-- Loading -->
+
+            <div
+                class="loading-container"
+                *ngIf="isLoading">
+
+                <mat-spinner
+                    diameter="45">
+                </mat-spinner>
+
+                <p>
+                    Loading assessment...
+                </p>
+
+            </div>
+
+
+            <!-- Error -->
+
+            <div
+                class="error-container"
+                *ngIf="
+                    !isLoading &&
+                    errorMessage
+                ">
+
+                <mat-icon>
+                    error_outline
+                </mat-icon>
+
+                <h2>
+                    Unable to Load Assessment
+                </h2>
+
+                <p>
+                    {{ errorMessage }}
+                </p>
+
+                <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="goBack()">
+
+                    Back to Assessments
+
+                </button>
+
+            </div>
+
+
+            <!-- Assessment -->
+
+            <div
+                *ngIf="
+                    !isLoading &&
+                    assessment
+                ">
+
+
+                <!-- Assessment Header -->
+
+                <mat-card class="assessment-header">
+
+
+                    <div class="header-top">
+
+                        <div>
+
+                            <div class="title-row">
+
+                                <h1>
+                                    {{ assessment.title }}
+                                </h1>
+
+                                <span class="level-badge">
+
+                                    {{ assessment.level }}
+
+                                </span>
+
+                            </div>
+
+                            <p class="topic">
+
+                                {{ assessment.topic }}
+
+                            </p>
+
+                        </div>
+
+
+                        <mat-icon class="header-icon">
+                            assignment
+                        </mat-icon>
+
+                    </div>
+
+
+                    <div class="assessment-meta">
+
+
+                        <div class="meta-item">
+
+                            <mat-icon>
+                                quiz
+                            </mat-icon>
+
+                            <span>
+
+                                {{
+                                    assessment.questions?.length || 0
+                                }}
+                                Questions
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="meta-item">
+
+                            <mat-icon>
+                                grade
+                            </mat-icon>
+
+                            <span>
+
+                                {{ assessment.totalMarks }}
+                                Marks
+
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            class="meta-item"
+                            *ngIf="assessment.class">
+
+                            <mat-icon>
+                                school
+                            </mat-icon>
+
+                            <span>
+
+                                {{ assessment.class.level }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </mat-card>
+
+
+                <!-- Upload Instructions -->
+
+                <mat-card class="instructions-card">
+
+
+                    <div class="instructions-title">
+
+                        <mat-icon>
+                            info
+                        </mat-icon>
+
+                        <h2>
+                            Answer Submission Instructions
+                        </h2>
+
+                    </div>
+
+
+                    <div class="instructions-content">
+
+                        <p>
+                            Please read the following instructions
+                            before completing your assessment.
+                        </p>
+
+
+                        <ul>
+
+                            <li>
+                                Complete all questions in the assessment.
+                            </li>
+
+                            <li>
+                                Write your answers clearly on paper.
+                            </li>
+
+                            <li>
+                                Write your answers in German unless
+                                the question specifically asks otherwise.
+                            </li>
+
+                            <li>
+                                After completing the assessment,
+                                scan or take clear photos of your answers.
+                            </li>
+
+                            <li>
+                                Combine your answer pages into a single
+                                PDF if possible.
+                            </li>
+
+                            <li>
+                                You can upload your answers as a
+                                <strong>PDF, JPG, or PNG</strong> file.
+                            </li>
+
+                            <li>
+                                Make sure all pages are clearly visible
+                                and readable.
+                            </li>
+
+                            <li>
+                                Make sure your name and registration
+                                number are included on your answer sheet.
+                            </li>
+
+                            <li>
+                                Check your answers before uploading.
+                            </li>
+
+                            <li>
+                                Only upload the final answer file.
+                            </li>
+
+                        </ul>
+
+
+                        <div class="important-note">
+
+                            <mat-icon>
+                                warning
+                            </mat-icon>
+
+                            <span>
+                                Please make sure that your uploaded file
+                                contains all of your answers before
+                                submitting it.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </mat-card>
+
+
+                <!-- Instructions from Assessment -->
+
+                <mat-card class="general-instructions-card">
+
+                    <h2>
+                        Assessment Instructions
+                    </h2>
+
+                    <p>
+                        {{ assessment.instructions }}
+                    </p>
+
+                </mat-card>
+
+
+                <!-- Questions -->
+
+                <div class="questions-container">
+
+
+                    <div class="section-title">
+
+                        <h2>
+                            Questions
+                        </h2>
+
+                        <span>
+                            {{ assessment.questions?.length || 0 }}
+                            Questions
+                        </span>
+
+                    </div>
+
+
+                    <mat-card
+                        class="question-card"
+                        *ngFor="
+                            let question of assessment.questions;
+                            let i = index
+                        ">
+
+
+                        <div class="question-header">
+
+                            <div class="question-number">
+
+                                {{ question.questionNo }}
+
+                            </div>
+
+
+                            <div class="question-marks">
+
+                                {{ question.marks }}
+                                Marks
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="question-content">
+
+                            <p class="german-question">
+
+                                {{ question.question }}
+
+                            </p>
+
+
+                            <!-- English Question -->
+
+                            <p
+                                class="english-question"
+                                *ngIf="
+                                    assessment.level === 'A1' &&
+                                    question.englishQuestion
+                                ">
+
+                                <span>
+                                    English:
+                                </span>
+
+                                {{ question.englishQuestion }}
+
+                            </p>
+
+                        </div>
+
+
+                    </mat-card>
+
+                </div>
+
+
+                <!-- Upload Answers -->
+
+                <mat-card class="upload-card">
+
+
+                    <div class="upload-header">
+
+                        <div class="upload-icon">
+
+                            <mat-icon>
+                                upload_file
+                            </mat-icon>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2>
+                                Upload Your Answers
+                            </h2>
+
+                            <p>
+                                Upload your completed assessment
+                                after answering all questions.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- File Selection -->
+
+                    <div class="file-upload-area">
+
+
+                        <input
+                            type="file"
+                            id="answerFile"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            (change)="onFileSelected($event)"
+                            hidden>
+
+
+                        <label
+                            for="answerFile"
+                            class="file-select-button">
+
+                            <mat-icon>
+                                attach_file
+                            </mat-icon>
+
+                            Select Answer File
+
+                        </label>
+
+
+                        <p class="file-types">
+
+                            Accepted formats:
+                            PDF, JPG, PNG
+
+                        </p>
+
+
+                    </div>
+
+
+                    <!-- Selected File -->
+
+                    <div
+                        class="selected-file"
+                        *ngIf="selectedFile">
+
+                        <mat-icon>
+                            description
+                        </mat-icon>
+
+
+                        <div class="file-info">
+
+                            <strong>
+                                {{ getFileName() }}
+                            </strong>
+
+                            <span>
+                                Ready to upload
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Upload Button -->
+
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        class="upload-button"
+                        [disabled]="!selectedFile"
+                        (click)="uploadAnswers()">
+
+                        <mat-icon>
+                            cloud_upload
+                        </mat-icon>
+
+                        Upload Answers
+
+                    </button>
+
+
+                </mat-card>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
