@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Router } from '@angular/router';
 
 export interface AssessmentQuestion {
     questionNo: number;
@@ -36,7 +35,7 @@ export class AssessmentService {
 
     private apiUrl = `${environment.apiUrl}/assessments`;
 
-    constructor(private http: HttpClient, private router: Router) {}
+    constructor(private http: HttpClient) {}
 
     // =====================================
     // Get All Assessments
@@ -57,17 +56,14 @@ export class AssessmentService {
     // Get Assessment By ID
     // =====================================
 
-    viewAssessment(assessment: Assessment): void {
+    getAssessmentById(id: string): Observable<Assessment> {
 
-        if (!assessment._id) {
-            console.error('Assessment ID is missing.');
-            return;
-        }
-
-        this.router.navigate([
-            '/admin/assessments',
-            assessment._id
-        ]);
+        return this.http.get<Assessment>(
+            `${this.apiUrl}/${id}`,
+            {
+            withCredentials: true
+            }
+        );
 
     }
 

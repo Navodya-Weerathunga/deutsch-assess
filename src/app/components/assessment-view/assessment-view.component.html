@@ -1,0 +1,348 @@
+<div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <app-admin-navbar></app-admin-navbar>
+
+
+    <!-- Main Content -->
+    <div class="content">
+
+        <div class="page-container">
+
+
+            <!-- Loading -->
+            <div
+                class="loading-container"
+                *ngIf="isLoading">
+
+                <mat-spinner diameter="45"></mat-spinner>
+
+                <p>Loading assessment...</p>
+
+            </div>
+
+
+            <!-- Assessment -->
+            <mat-card
+                class="assessment-card"
+                *ngIf="!isLoading && assessment">
+
+
+                <!-- Back Button -->
+
+                <button
+                    mat-button
+                    color="primary"
+                    class="back-button"
+                    routerLink="/assessments">
+
+                    <mat-icon>
+                        arrow_back
+                    </mat-icon>
+
+                    Back to Assessments
+
+                </button>
+
+
+                <!-- Assessment Header -->
+
+                <div class="assessment-header">
+
+                    <div class="header-title">
+
+                        <div class="logo-icon">
+
+                            <mat-icon>
+                                school
+                            </mat-icon>
+
+                        </div>
+
+                        <div>
+
+                            <h1>
+                                DEUTSCH ASSESS
+                            </h1>
+
+                            <p>
+                                German Language Assessment
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Title -->
+
+                <div class="title-section">
+
+                    <h2>
+                        {{ assessment.title }}
+                    </h2>
+
+                </div>
+
+
+                <!-- Assessment Information -->
+
+                <div class="assessment-info">
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Level
+                        </span>
+
+                        <span
+                            class="level-badge"
+                            [ngClass]="
+                                'level-' +
+                                assessment.level.toLowerCase()
+                            ">
+
+                            {{ assessment.level }}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Topic
+                        </span>
+
+                        <span class="info-value">
+                            {{ assessment.topic }}
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="info-item"
+                        *ngIf="assessment.class?.classDate">
+
+                        <span class="info-label">
+                            Class Date
+                        </span>
+
+                        <span class="info-value">
+
+                            {{
+                                assessment.class.classDate
+                                | date:'dd/MM/yyyy'
+                            }}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Total Marks
+                        </span>
+
+                        <span class="marks-value">
+
+                            {{ assessment.totalMarks }}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-item">
+
+                        <span class="info-label">
+                            Questions
+                        </span>
+
+                        <span class="info-value">
+
+                            {{ assessment.questions.length || 0 }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Instructions -->
+
+                <div class="instructions-section">
+
+                    <div class="section-heading">
+
+                        <mat-icon>
+                            info
+                        </mat-icon>
+
+                        <h3>
+                            Instructions
+                        </h3>
+
+                    </div>
+
+                    <p>
+                        {{ assessment.instructions }}
+                    </p>
+
+                </div>
+
+
+                <!-- Questions -->
+
+                <div class="questions-section">
+
+                    <div class="questions-header">
+
+                        <h3>
+                            Questions
+                        </h3>
+
+                        <span>
+                            Total: {{ assessment.totalMarks }} Marks
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="question-card"
+                        *ngFor="
+                            let question of assessment.questions
+                        ">
+
+
+                        <!-- Question Header -->
+
+                        <div class="question-top">
+
+                            <div class="question-number">
+
+                                {{ question.questionNo }}
+
+                            </div>
+
+                            <div class="question-marks">
+
+                                {{ question.marks }} Marks
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- German Question -->
+
+                        <div class="question-content">
+
+                            <p class="german-question">
+
+                                {{ question.question }}
+
+                            </p>
+
+
+                            <!-- English Question -->
+
+                            <p
+                                class="english-question"
+                                *ngIf="
+                                    assessment.level === 'A1'
+                                    && question.englishQuestion
+                                ">
+
+                                {{ question.englishQuestion }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Footer -->
+
+                <div class="assessment-footer">
+
+                    <div>
+
+                        <span>
+                            Generated by:
+                        </span>
+
+                        <strong>
+                            {{ assessment.generatedBy || 'GPT' }}
+                        </strong>
+
+                    </div>
+
+                    <div *ngIf="assessment.createdAt">
+
+                        Generated on:
+
+                        {{
+                            assessment.createdAt
+                            | date:'dd/MM/yyyy HH:mm'
+                        }}
+
+                    </div>
+
+                </div>
+
+
+            </mat-card>
+
+
+            <!-- Assessment Not Found -->
+
+            <div
+                class="empty-container"
+                *ngIf="!isLoading && !assessment">
+
+                <mat-icon>
+                    assignment_late
+                </mat-icon>
+
+                <h3>
+                    Assessment Not Found
+                </h3>
+
+                <p>
+                    The requested assessment could not be found.
+                </p>
+
+                <button
+                    mat-raised-button
+                    color="primary"
+                    routerLink="/admin/assessments">
+
+                    <mat-icon>
+                        arrow_back
+                    </mat-icon>
+
+                    Back to Assessments
+
+                </button>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>

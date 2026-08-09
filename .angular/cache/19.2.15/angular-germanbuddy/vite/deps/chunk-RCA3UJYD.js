@@ -3144,7 +3144,8 @@ export {
   ActiveDescendantKeyManager,
   addAriaReferencedId,
   removeAriaReferencedId,
+  AriaDescriber,
   MATERIAL_SANITY_CHECKS,
   MatCommonModule
 };
-//# sourceMappingURL=chunk-QIHKJWKK.js.map
+//# sourceMappingURL=chunk-RCA3UJYD.js.map

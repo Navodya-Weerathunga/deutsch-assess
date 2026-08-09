@@ -10,161 +10,172 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router } from '@angular/router';
 
 import { AssessmentService, Assessment } from '../../services/assessment.service';
 
 import { AdminNavbarComponent } from '../admin-nav-bar/admin-nav-bar.component';
 
 @Component({
-  selector: 'app-assessment-list',
-  standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
+    selector: 'app-assessment-list',
+    standalone: true,
+    imports: [
+        CommonModule,
+        RouterModule,
 
-    MatTableModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatProgressSpinnerModule,
-    FormsModule,
-    AdminNavbarComponent
-  ],
+        MatTableModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        MatInputModule,
+        MatFormFieldModule,
+        MatProgressSpinnerModule,
+        FormsModule,
+        MatTooltipModule,
+        AdminNavbarComponent
+    ],
 
-  templateUrl: './assessment-list.component.html',
-  styleUrl: './assessment-list.component.css'
+    templateUrl: './assessment-list.component.html',
+    styleUrl: './assessment-list.component.css'
 
-})
+    })
 
 export class AssessmentListComponent implements OnInit {
 
-  // =====================================
-  // Table Columns
-  // =====================================
+    // =====================================
+    // Table Columns
+    // =====================================
 
-  displayedColumns: string[] = [
-    'title',
-    'level',
-    'topic',
-    'classDate',
-    'questions',
-    'totalMarks',
-    'actions'
-  ];
+    displayedColumns: string[] = [
+        'title',
+        'level',
+        'topic',
+        'classDate',
+        'questions',
+        'totalMarks',
+        'actions'
+    ];
 
-  // =====================================
-  // Assessments
-  // =====================================
+    // =====================================
+    // Assessments
+    // =====================================
 
-  assessments: Assessment[] = [];
+    assessments: Assessment[] = [];
 
-  filteredAssessments: Assessment[] = [];
+    filteredAssessments: Assessment[] = [];
 
-  isLoading = false;
+    isLoading = false;
 
-  searchText = '';
+    searchText = '';
 
-  constructor(
-    private assessmentService: AssessmentService
-  ) {}
+    constructor(
+        private assessmentService: AssessmentService,
+        private router: Router
+    ) {}
 
-  // =====================================
-  // Initialize
-  // =====================================
+    // =====================================
+    // Initialize
+    // =====================================
 
-  ngOnInit(): void {
+    ngOnInit(): void {
 
-    this.loadAssessments();
-
-  }
-
-  // =====================================
-  // Load Assessments
-  // =====================================
-
-  loadAssessments(): void {
-
-    this.isLoading = true;
-
-    this.assessmentService.getAllAssessments().subscribe({
-
-      next: (assessments: Assessment[]) => {
-
-        this.assessments = assessments;
-
-        this.filteredAssessments = assessments;
-
-        this.isLoading = false;
-
-      },
-
-      error: (err) => {
-
-        console.error('Error loading assessments:', err);
-
-        this.isLoading = false;
-
-      }
-
-    });
-
-  }
-
-  // =====================================
-  // Search Assessments
-  // =====================================
-
-  searchAssessments(): void {
-
-    const search = this.searchText
-      .toLowerCase()
-      .trim();
-
-    if (!search) {
-
-      this.filteredAssessments = this.assessments;
-
-      return;
+        this.loadAssessments();
 
     }
 
-    this.filteredAssessments = this.assessments.filter(
-      (assessment) =>
+    // =====================================
+    // Load Assessments
+    // =====================================
 
-        assessment.title
-          ?.toLowerCase()
-          .includes(search)
+    loadAssessments(): void {
 
-        ||
+        this.isLoading = true;
 
-        assessment.topic
-          ?.toLowerCase()
-          .includes(search)
+        this.assessmentService.getAllAssessments().subscribe({
 
-        ||
+        next: (assessments: Assessment[]) => {
 
-        assessment.level
-          ?.toLowerCase()
-          .includes(search)
+            this.assessments = assessments;
 
-    );
+            this.filteredAssessments = assessments;
 
-  }
+            this.isLoading = false;
 
-  // =====================================
-  // View Assessment
-  // =====================================
+        },
 
-  viewAssessment(assessment: Assessment): void {
+        error: (err) => {
 
-    console.log('View Assessment:', assessment);
+            console.error('Error loading assessments:', err);
 
-    // We will add navigation here later.
-    // Example:
-    // this.router.navigate(['/admin/assessments', assessment._id]);
+            this.isLoading = false;
 
-  }
+        }
+
+        });
+
+    }
+
+    // =====================================
+    // Search Assessments
+    // =====================================
+
+    searchAssessments(): void {
+
+        const search = this.searchText
+        .toLowerCase()
+        .trim();
+
+        if (!search) {
+
+        this.filteredAssessments = this.assessments;
+
+        return;
+
+        }
+
+        this.filteredAssessments = this.assessments.filter(
+        (assessment) =>
+
+            assessment.title
+            ?.toLowerCase()
+            .includes(search)
+
+            ||
+
+            assessment.topic
+            ?.toLowerCase()
+            .includes(search)
+
+            ||
+
+            assessment.level
+            ?.toLowerCase()
+            .includes(search)
+
+        );
+
+    }
+
+    // =====================================
+    // View Assessment
+    // =====================================
+
+    viewAssessment(assessment: Assessment): void {
+
+    if (!assessment._id) {
+
+        console.error('Assessment ID is missing.');
+
+        return;
+
+    }
+
+    this.router.navigate([
+        '/assessment',
+        assessment._id
+    ]);
+
+    }
 
 }
