@@ -42,6 +42,9 @@ export const routes: Routes = [
 
     // Student dashboard route
     {path: 'student-dashboard', loadComponent: () => import('./components/student-dashboard/student-dashboard.component').then(m => m.StudentDashboardComponent)},
+
+    // Student assessment list route
+    {path: 'student-assessments', loadComponent: () => import('./components/student-assessment-list/student-assessment-list.component').then(m => m.StudentAssessmentListComponent)},
 ]
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

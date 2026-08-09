@@ -1,0 +1,484 @@
+* {
+
+    margin: 0;
+
+    padding: 0;
+
+    box-sizing: border-box;
+
+}
+
+
+/* =====================================
+   Dashboard
+===================================== */
+
+.dashboard-container {
+
+    display: flex;
+
+    min-height: 100vh;
+
+    background: #f5f8fc;
+
+}
+
+
+/* =====================================
+   Main Content
+===================================== */
+
+.content {
+
+    flex: 1;
+
+    margin-left: 260px;
+
+    padding: 30px;
+
+}
+
+
+.page-container {
+
+    padding: 35px;
+
+    min-height: 100vh;
+
+}
+
+
+/* =====================================
+   Page Header
+===================================== */
+
+.page-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 30px;
+
+}
+
+
+.page-header h1 {
+
+    color: #0d47a1;
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    margin-bottom: 7px;
+
+}
+
+
+.page-header p {
+
+    color: #666;
+
+    font-size: 15px;
+
+}
+
+
+.page-header > mat-icon {
+
+    color: #0d47a1;
+
+    font-size: 42px;
+
+    width: 42px;
+
+    height: 42px;
+
+}
+
+
+/* =====================================
+   Assessment Grid
+===================================== */
+
+.assessment-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 25px;
+
+}
+
+
+/* =====================================
+   Assessment Card
+===================================== */
+
+.assessment-card {
+
+    border-radius: 18px;
+
+    padding: 25px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, .07);
+
+    transition: .25s;
+
+}
+
+
+.assessment-card:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, .11);
+
+}
+
+
+/* =====================================
+   Card Header
+===================================== */
+
+.card-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 20px;
+
+}
+
+
+.assessment-icon {
+
+    width: 50px;
+
+    height: 50px;
+
+    border-radius: 12px;
+
+    background: #e3f2fd;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+
+.assessment-icon mat-icon {
+
+    color: #0d47a1;
+
+    font-size: 28px;
+
+    width: 28px;
+
+    height: 28px;
+
+}
+
+
+/* =====================================
+   Level
+===================================== */
+
+.level-badge {
+
+    padding: 6px 14px;
+
+    border-radius: 20px;
+
+    background: #0d47a1;
+
+    color: white;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+}
+
+
+/* =====================================
+   Assessment Body
+===================================== */
+
+.assessment-body h2 {
+
+    color: #333;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+    margin-bottom: 8px;
+
+}
+
+
+.topic {
+
+    color: #777;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    margin-bottom: 20px;
+
+}
+
+
+/* =====================================
+   Details
+===================================== */
+
+.assessment-details {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+}
+
+
+.detail-item {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    color: #555;
+
+    font-size: 14px;
+
+}
+
+
+.detail-item mat-icon {
+
+    color: #0d47a1;
+
+    font-size: 20px;
+
+    width: 20px;
+
+    height: 20px;
+
+}
+
+
+/* =====================================
+   Card Footer
+===================================== */
+
+.card-footer {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-top: 25px;
+
+    padding-top: 18px;
+
+    border-top: 1px solid #e0e0e0;
+
+}
+
+
+.assessment-date {
+
+    color: #888;
+
+    font-size: 13px;
+
+}
+
+
+.card-footer button {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+}
+
+
+/* =====================================
+   Loading
+===================================== */
+
+.loading-container {
+
+    min-height: 400px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 15px;
+
+}
+
+
+.loading-container p {
+
+    color: #666;
+
+}
+
+
+/* =====================================
+   Empty State
+===================================== */
+
+.empty-container {
+
+    background: white;
+
+    border-radius: 18px;
+
+    padding: 60px 30px;
+
+    text-align: center;
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, .07);
+
+}
+
+
+.empty-container mat-icon {
+
+    color: #90a4ae;
+
+    font-size: 60px;
+
+    width: 60px;
+
+    height: 60px;
+
+    margin-bottom: 15px;
+
+}
+
+
+.empty-container h2 {
+
+    color: #0d47a1;
+
+    font-size: 22px;
+
+    margin-bottom: 10px;
+
+}
+
+
+.empty-container p {
+
+    color: #777;
+
+    font-size: 14px;
+
+}
+
+
+/* =====================================
+   Responsive
+===================================== */
+
+@media (max-width: 900px) {
+
+    .assessment-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .content {
+
+        margin-left: 75px;
+
+        padding: 15px;
+
+    }
+
+
+    .page-container {
+
+        padding: 15px;
+
+    }
+
+
+    .page-header h1 {
+
+        font-size: 25px;
+
+    }
+
+
+    .assessment-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .card-footer {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 15px;
+
+    }
+
+
+    .card-footer button {
+
+        width: 100%;
+
+        justify-content: center;
+
+    }
+
+}

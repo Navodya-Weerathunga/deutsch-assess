@@ -67,4 +67,19 @@ export class AssessmentService {
 
     }
 
+    // =====================================
+    // Get Student Assessments
+    // =====================================
+
+    getStudentAssessments(): Observable<any[]> {
+
+        return this.http.get<any[]>(
+        `${this.apiUrl}/student`,
+        {
+            withCredentials: true
+        }
+        );
+
+    }
+
 }
