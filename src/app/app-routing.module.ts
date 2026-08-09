@@ -30,6 +30,9 @@ export const routes: Routes = [
 
     // Tutor list route
     {path: 'tutor-list', loadComponent: () => import('./components/tutor-list/tutor-list.component').then(m => m.TutorListComponent)},
+
+    // Assessment list route
+    {path: 'assessments', loadComponent: () => import('./components/assessment-list/assessment-list.component').then(m => m.AssessmentListComponent)},
 ]
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
