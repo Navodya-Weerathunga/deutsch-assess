@@ -74,7 +74,7 @@ export class LoginComponent {
             break;
 
           case 'STUDENT':
-            // this.router.navigate(['/student-dashboard']);
+            this.router.navigate(['/student-dashboard']);
             break;
 
           default:

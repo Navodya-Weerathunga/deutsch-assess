@@ -1,0 +1,286 @@
+<div class="dashboard-container">
+
+    <!-- Student Sidebar -->
+
+    <app-student-navbar></app-student-navbar>
+
+
+    <!-- Main Content -->
+
+    <div class="content">
+
+        <div class="page-container">
+
+
+            <!-- Welcome Section -->
+
+            <div class="welcome-section">
+
+                <div>
+
+                    <h1>
+                        Welcome Back! 👋
+                    </h1>
+
+                    <p>
+                        Continue your German learning journey.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Summary Cards -->
+
+            <div class="summary-cards">
+
+
+                <!-- Classes -->
+
+                <mat-card class="summary-card">
+
+                    <div class="summary-icon classes-icon">
+
+                        <mat-icon>
+                            calendar_month
+                        </mat-icon>
+
+                    </div>
+
+                    <div class="summary-content">
+
+                        <span>
+                            My Classes
+                        </span>
+
+                        <strong>
+                            {{ totalClasses }}
+                        </strong>
+
+                    </div>
+
+                </mat-card>
+
+
+                <!-- Assessments -->
+
+                <mat-card class="summary-card">
+
+                    <div class="summary-icon assessment-icon">
+
+                        <mat-icon>
+                            assignment
+                        </mat-icon>
+
+                    </div>
+
+                    <div class="summary-content">
+
+                        <span>
+                            Assessments
+                        </span>
+
+                        <strong>
+                            {{ totalAssessments }}
+                        </strong>
+
+                    </div>
+
+                </mat-card>
+
+            </div>
+
+
+            <!-- Upcoming Class -->
+
+            <mat-card class="dashboard-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            Upcoming Class
+                        </h2>
+
+                        <p>
+                            Your next scheduled German class
+                        </p>
+
+                    </div>
+
+                    <mat-icon>
+                        event
+                    </mat-icon>
+
+                </div>
+
+
+                <div class="class-content">
+
+                    <div class="class-info">
+
+                        <h3>
+                            {{ upcomingClass.topic }}
+                        </h3>
+
+                        <span class="level-badge">
+
+                            {{ upcomingClass.level }}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="class-details">
+
+
+                        <div class="detail-item">
+
+                            <mat-icon>
+                                calendar_today
+                            </mat-icon>
+
+                            <span>
+
+                                {{ upcomingClass.date }}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail-item">
+
+                            <mat-icon>
+                                schedule
+                            </mat-icon>
+
+                            <span>
+
+                                {{ upcomingClass.time }}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="detail-item">
+
+                            <mat-icon>
+                                person
+                            </mat-icon>
+
+                            <span>
+
+                                {{ upcomingClass.tutor }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        class="join-button"
+                        (click)="joinClass()">
+
+                        <mat-icon>
+                            video_call
+                        </mat-icon>
+
+                        Join Class
+
+                    </button>
+
+                </div>
+
+            </mat-card>
+
+
+            <!-- Latest Assessment -->
+
+            <mat-card class="dashboard-card">
+
+                <div class="card-header">
+
+                    <div>
+
+                        <h2>
+                            Latest Assessment
+                        </h2>
+
+                        <p>
+                            Your latest available assessment
+                        </p>
+
+                    </div>
+
+                    <mat-icon>
+                        assignment
+                    </mat-icon>
+
+                </div>
+
+
+                <div class="assessment-content">
+
+                    <div class="assessment-info">
+
+                        <h3>
+                            {{ latestAssessment.title }}
+                        </h3>
+
+                        <p>
+                            {{ latestAssessment.topic }}
+                        </p>
+
+                    </div>
+
+
+                    <div class="assessment-meta">
+
+                        <span class="level-badge">
+
+                            {{ latestAssessment.level }}
+
+                        </span>
+
+                        <span class="marks">
+
+                            {{ latestAssessment.totalMarks }}
+                            Marks
+
+                        </span>
+
+                    </div>
+
+
+                    <button
+                        mat-raised-button
+                        color="primary"
+                        routerLink="/student/assessments">
+
+                        <mat-icon>
+                            visibility
+                        </mat-icon>
+
+                        View Assessment
+
+                    </button>
+
+                </div>
+
+            </mat-card>
+
+
+        </div>
+
+    </div>
+
+</div>

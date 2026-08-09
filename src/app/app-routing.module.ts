@@ -39,6 +39,9 @@ export const routes: Routes = [
 
     // Assessment view route
     {path: 'assessment/:id', loadComponent: () => import('./components/assessment-view/assessment-view.component').then(m => m.AssessmentViewComponent)},
+
+    // Student dashboard route
+    {path: 'student-dashboard', loadComponent: () => import('./components/student-dashboard/student-dashboard.component').then(m => m.StudentDashboardComponent)},
 ]
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
