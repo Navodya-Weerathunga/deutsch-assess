@@ -44,51 +44,6 @@ router.get(
 );
 
 // =====================================================
-// Get Assessment By ID
-// =====================================================
-
-router.get(
-    "/:id",
-    verifyToken,
-    checkRole("ADMIN"),
-    async (req, res) => {
-
-        try {
-
-            const assessment = await Assessment.findById(
-                req.params.id
-            ).populate({
-                path: "class",
-                select:
-                    "topic classDate startTime endTime batch medium level status"
-            });
-
-            if (!assessment) {
-
-                return res.status(404).json({
-                    msg: "Assessment not found."
-                });
-
-            }
-
-            res.status(200).json(assessment);
-
-        }
-
-        catch (err) {
-
-            console.error("Error loading assessment:", err);
-
-            res.status(500).json({
-                msg: "Failed to load assessment."
-            });
-
-        }
-
-    }
-);
-
-// =====================================================
 // Get Assessments Available for Logged-in Student
 // =====================================================
 
@@ -201,6 +156,51 @@ router.get(
 
                 error: err.message
 
+            });
+
+        }
+
+    }
+);
+
+// =====================================================
+// Get Assessment By ID
+// =====================================================
+
+router.get(
+    "/:id",
+    verifyToken,
+    checkRole("ADMIN"),
+    async (req, res) => {
+
+        try {
+
+            const assessment = await Assessment.findById(
+                req.params.id
+            ).populate({
+                path: "class",
+                select:
+                    "topic classDate startTime endTime batch medium level status"
+            });
+
+            if (!assessment) {
+
+                return res.status(404).json({
+                    msg: "Assessment not found."
+                });
+
+            }
+
+            res.status(200).json(assessment);
+
+        }
+
+        catch (err) {
+
+            console.error("Error loading assessment:", err);
+
+            res.status(500).json({
+                msg: "Failed to load assessment."
             });
 
         }
