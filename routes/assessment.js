@@ -4,6 +4,7 @@ const express = require("express");
 const router = express.Router();
 const Assessment = require("../models/Assessment");
 const Class = require("../models/Class");
+const User = require("../models/User");
 const { verifyToken } = require("../middleware/auth");
 const checkRole = require("../middleware/checkRloe");
 
