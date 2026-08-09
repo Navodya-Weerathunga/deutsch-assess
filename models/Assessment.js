@@ -50,6 +50,10 @@ const AssessmentSchema = new mongoose.Schema({
             type: String,
             required: true
         },
+        englishQuestion: {
+            type: String,
+            default: ""
+        },
         marks: {
             type: Number,
             required: true
