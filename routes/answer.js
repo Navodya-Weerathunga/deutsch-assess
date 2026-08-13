@@ -15,6 +15,172 @@ const upload = require("../middleware/uploadAnswer");
 const { verifyToken } = require("../middleware/auth");
 const checkRole = require("../middleware/checkRloe");
 
+const ocrService = require("../services/ocr.service");
+
+// =========================================
+// Process OCR
+// =========================================
+
+async function processOCR(answerId) {
+
+    try {
+
+        console.log(
+            "========== STARTING ANSWER OCR =========="
+        );
+
+        // -------------------------------------
+        // Find Answer
+        // -------------------------------------
+
+        const answer =
+            await Answer.findById(answerId);
+
+
+        if (!answer) {
+
+            console.error(
+                "Answer not found for OCR:",
+                answerId
+            );
+
+            return;
+
+        }
+
+
+        // -------------------------------------
+        // Set OCR status
+        // -------------------------------------
+
+        answer.ocrStatus =
+            "PROCESSING";
+
+        await answer.save();
+
+
+        // -------------------------------------
+        // Run OCR
+        // -------------------------------------
+
+        const ocrResult =
+            await ocrService.extractText(
+
+                answer.answerFile.filePath,
+
+                answer.answerFile.fileType
+
+            );
+
+
+        console.log(
+            "OCR completed:"
+        );
+
+        console.log(
+            JSON.stringify(
+                ocrResult,
+                null,
+                2
+            )
+        );
+
+
+        // -------------------------------------
+        // Validate OCR result
+        // -------------------------------------
+
+        if (
+            !ocrResult ||
+            !Array.isArray(
+                ocrResult.answers
+            )
+        ) {
+
+            throw new Error(
+                "Invalid OCR result."
+            );
+
+        }
+
+
+        // -------------------------------------
+        // Save OCR answers
+        // -------------------------------------
+
+        answer.ocrAnswers =
+            ocrResult.answers;
+
+
+        answer.ocrStatus =
+            "COMPLETED";
+
+
+        answer.ocrCompletedAt =
+            new Date();
+
+
+        answer.ocrError =
+            "";
+
+
+        await answer.save();
+
+
+        console.log(
+            "OCR answers saved successfully:",
+            answerId
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "OCR processing failed:",
+            error
+        );
+
+
+        // -------------------------------------
+        // Update failed status
+        // -------------------------------------
+
+        try {
+
+            const answer =
+                await Answer.findById(
+                    answerId
+                );
+
+
+            if (answer) {
+
+                answer.ocrStatus =
+                    "FAILED";
+
+                answer.ocrError =
+                    error.message;
+
+                await answer.save();
+
+            }
+
+        }
+
+        catch (updateError) {
+
+            console.error(
+                "Failed to update OCR status:",
+                updateError
+            );
+
+        }
+
+    }
+
+}
+
 // =====================================================
 // Submit Student Answers
 // =====================================================
@@ -276,48 +442,32 @@ router.post(
             // Create Answer
             // -----------------------------------------
 
-            const answer =
-                new Answer({
-
-                    assessment:
-                        assessment._id,
-
-                    student:
-                        student._id,
-
-                    class:
-                        classDoc._id,
-
-                    answerFile: {
-
-                        fileName:
-                            req.file.originalname,
-
-                        filePath:
-                            req.file.path,
-
-                        fileType:
-                            req.file.mimetype,
-
-                        uploadedAt:
-                            new Date()
-
-                    },
-
-                    status:
-                        "SUBMITTED",
-
-                    submittedAt:
-                        new Date()
-
-                });
-
+            const answer = new Answer({
+                assessment: assessment._id,
+                student: student._id,
+                class: classDoc._id,
+                answerFile: {
+                    fileName: req.file.originalname,
+                    filePath: req.file.path,
+                    fileType: req.file.mimetype,
+                    uploadedAt: new Date()
+                },
+                status: "SUBMITTED",
+                ocrStatus: "PENDING",
+                submittedAt: new Date()
+            });
 
             // -----------------------------------------
             // Save Answer
             // -----------------------------------------
 
             await answer.save();
+
+            // =========================================
+            // Start OCR
+            // =========================================
+
+            processOCR(answer._id);
 
 
             // -----------------------------------------

@@ -123,33 +123,76 @@ IMPORTANT RULES:
     ]
 }
 
-15. Create one object for every question visible on the assessment.
 
-16. \`questionNo\` must contain the question number.
+========================================================
+IMPORTANT QUESTION NUMBER RULES
+========================================================
 
-17. \`answer\` must contain ONLY the student's written answer.
+15. The assessment contains numbered questions.
 
-18. Preserve the student's original wording exactly as written.
+16. Carefully identify the printed question number immediately
+associated with each student's answer.
 
-19. DO NOT correct grammar, spelling, vocabulary, or punctuation.
+17. Never infer a question number from the content of the answer.
 
-20. DO NOT translate the answer.
+18. Never reuse a previous question number.
 
-21. If a word is unclear, write "[UNCLEAR]".
+19. Each question number must appear exactly once.
 
-22. If the student did not answer a question, write "[NO ANSWER]".
+20. The question numbers must be sequential:
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10.
 
-23. Do not include the assessment questions.
+21. If an answer is clearly located under Question 7,
+its questionNo MUST be 7.
 
-24. Do not include marks or instructions.
+22. Do not assign a question number based on the meaning
+of the student's answer.
 
-25. Do not include Markdown code fences.
+23. Before returning the JSON, verify that:
 
-26. Return ONLY valid JSON.
+- Every question from 1 to 10 appears exactly once.
+- No question number is duplicated.
+- No question number is missing.
+- The question numbers are in ascending order.
 
-27. If a question has no visible answer, write:
+24. If a student's answer contains numbers, those numbers
+must NOT be interpreted as the question number.
+
+25. The printed question number on the assessment sheet
+always takes priority over the content of the student's answer.
+
+
+========================================================
+ANSWER EXTRACTION RULES
+========================================================
+
+26. Create one object for every question.
+
+27. questionNo must contain the actual printed question number.
+
+28. answer must contain ONLY the student's written answer.
+
+29. Preserve the student's original wording as closely as possible.
+
+30. DO NOT correct grammar, spelling, vocabulary, or punctuation.
+
+31. DO NOT translate the answer.
+
+32. If a word is unclear, write:
+
+[UNCLEAR]
+
+33. If the student did not answer a question, write:
 
 [NO ANSWER]
+
+34. Do not include the assessment questions.
+
+35. Do not include marks or instructions.
+
+36. Do not include Markdown code fences.
+
+37. Return ONLY valid JSON.
 
 The extracted text will later be provided to an AI assessment model, so accuracy is more important than correcting the student's language.
 
@@ -284,6 +327,9 @@ The extracted text will later be provided to an AI assessment model, so accuracy
 
         }
 
+        // =========================================
+        // Validate OCR Result
+        // =========================================
 
         if (
             !ocrResult.answers ||
@@ -294,6 +340,41 @@ The extracted text will later be provided to an AI assessment model, so accuracy
                 "OCR response does not contain a valid answers array."
             );
 
+        }
+
+        // =========================================
+        // Validate Question Numbers
+        // =========================================
+
+        const questionNumbers =
+            ocrResult.answers
+                .map(item => item.questionNo)
+                .sort((a, b) => a - b);
+
+        const expectedQuestionNumbers = [
+            1, 2, 3, 4, 5,
+            6, 7, 8, 9, 10
+        ];
+
+        const isValidQuestionNumbers =
+            questionNumbers.length ===
+                expectedQuestionNumbers.length &&
+            questionNumbers.every(
+                (number, index) =>
+                    number ===
+                    expectedQuestionNumbers[index]
+            );
+
+        if (!isValidQuestionNumbers) {
+
+            console.error(
+                "Invalid OCR question numbers:",
+                questionNumbers
+            );
+
+            throw new Error(
+                "OCR returned invalid or duplicate question numbers."
+            );
         }
 
 
@@ -311,17 +392,6 @@ The extracted text will later be provided to an AI assessment model, so accuracy
 
 
         return ocrResult;
-
-        console.log(
-            "========== OCR RESULT =========="
-        );
-
-        console.log(
-            extractedText
-        );
-
-
-        return extractedText.trim();
 
     }
 
