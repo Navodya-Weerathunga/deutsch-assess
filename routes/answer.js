@@ -16,6 +16,7 @@ const { verifyToken } = require("../middleware/auth");
 const checkRole = require("../middleware/checkRloe");
 
 const ocrService = require("../services/ocr.service");
+const { evaluateQuestion } = require("../services/assessment-scoring.service");
 
 // =========================================
 // Process OCR
@@ -131,6 +132,158 @@ async function processOCR(answerId) {
             "OCR answers saved successfully:",
             answerId
         );
+
+
+        // =========================================
+        // AI ASSESSMENT SCORING
+        // =========================================
+
+        console.log(
+            "========== STARTING AI ASSESSMENT =========="
+        );
+
+        // Get the assessment
+        const assessment =
+            await Assessment.findById(
+                answer.assessment
+            );
+
+        if (!assessment) {
+            throw new Error(
+                "Assessment not found for AI evaluation."
+            );
+        }
+
+        const cefr =
+            assessment.level.toUpperCase();
+
+        const questionResults = [];
+
+        let totalMarksAwarded = 0;
+
+
+        // -----------------------------------------
+        // Evaluate every question
+        // -----------------------------------------
+
+        for (
+            const question
+            of assessment.questions
+        ) {
+
+            console.log(
+                `Evaluating Q${question.questionNo}...`
+            );
+
+
+            // Find matching OCR answer
+            const ocrAnswer =
+                answer.ocrAnswers.find(
+                    item =>
+                        item.questionNo ===
+                        question.questionNo
+                );
+
+
+            const studentAnswer =
+                ocrAnswer?.answer || "";
+
+
+            // -------------------------------------
+            // Combined AI evaluation
+            // -------------------------------------
+
+            const result =
+                await evaluateQuestion({
+
+                    question:
+                        question.question,
+
+                    answer:
+                        studentAnswer,
+
+                    marks:
+                        question.marks,
+
+                    cefr
+                });
+
+
+            // -------------------------------------
+            // Store question result
+            // -------------------------------------
+
+            questionResults.push({
+
+                questionNo:
+                    question.questionNo,
+
+                taskCompletion:
+                    result.taskCompletion,
+
+                taskReason:
+                    result.taskReason,
+
+                xlmScore:
+                    result.xlmScore,
+
+                languageScore:
+                    result.languageScore,
+
+                finalPercentage:
+                    result.finalPercentage,
+
+                allocatedMarks:
+                    question.marks,
+
+                awardedMarks:
+                    result.awardedMarks
+
+            });
+
+
+            totalMarksAwarded +=
+                result.awardedMarks;
+
+
+            console.log(
+                `Q${question.questionNo}: ` +
+                `${result.awardedMarks.toFixed(2)}/` +
+                `${question.marks}`
+            );
+        }
+
+
+        // -----------------------------------------
+        // Save final assessment result
+        // -----------------------------------------
+
+        answer.questionResults =
+            questionResults;
+
+        answer.totalMarksAwarded =
+            Number(
+                totalMarksAwarded.toFixed(2)
+            );
+
+        answer.status =
+            "MARKED";
+
+        answer.markedAt =
+            new Date();
+
+        await answer.save();
+
+
+        console.log(
+            "========== AI ASSESSMENT COMPLETED =========="
+        );
+
+        console.log(
+            `Total: ${answer.totalMarksAwarded}/` +
+            `${assessment.totalMarks}`
+        );
+
 
     }
 
