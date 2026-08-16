@@ -94,11 +94,54 @@ const AnswerSchema = new mongoose.Schema({
         default: 0
     },
 
-
     overallFeedback: {
         type: String,
         default: ""
     },
+
+    questionResults: [
+        {
+            questionNo: {
+                type: Number,
+                required: true
+            },
+
+            taskCompletion: {
+                type: Number,
+                default: 0
+            },
+
+            taskReason: {
+                type: String,
+                default: ""
+            },
+
+            xlmScore: {
+                type: Number,
+                default: 0
+            },
+
+            languageScore: {
+                type: Number,
+                default: 0
+            },
+
+            finalPercentage: {
+                type: Number,
+                default: 0
+            },
+
+            allocatedMarks: {
+                type: Number,
+                required: true
+            },
+
+            awardedMarks: {
+                type: Number,
+                default: 0
+            }
+        }
+    ],
 
 
     // =========================================
