@@ -237,6 +237,63 @@ async function test() {
             `TOTAL: ${totalMarksAwarded.toFixed(2)} / ${assessment.totalMarks}`
         );
 
+        // ------------------------------------------------------------
+        // 7. SAVE RESULTS TO MONGODB
+        // ------------------------------------------------------------
+
+        console.log("\n============================================================");
+        console.log("SAVING RESULTS TO MONGODB");
+        console.log("============================================================");
+
+        const questionResults = results.map(result => ({
+            questionNo: result.questionNo,
+
+            taskCompletion:
+                result.taskCompletion,
+
+            taskReason:
+                result.taskReason,
+
+            xlmScore:
+                result.xlmScore,
+
+            languageScore:
+                result.languageScore,
+
+            finalPercentage:
+                result.finalPercentage,
+
+            allocatedMarks:
+                result.allocatedMarks,
+
+            awardedMarks:
+                result.awardedMarks
+        }));
+
+        await Answer.findByIdAndUpdate(
+            ANSWER_ID,
+            {
+                $set: {
+                    questionResults,
+                    totalMarksAwarded:
+                        Number(totalMarksAwarded.toFixed(2)),
+
+                    status: "MARKED",
+
+                    markedAt: new Date()
+                }
+            },
+            {
+                new: true
+            }
+        );
+
+        console.log("✅ Question results saved.");
+        console.log(
+            `✅ Total marks saved: ${totalMarksAwarded.toFixed(2)} / ${assessment.totalMarks}`
+        );
+        console.log("✅ Status changed to MARKED.");
+
         console.log(
             "============================================================"
         );
