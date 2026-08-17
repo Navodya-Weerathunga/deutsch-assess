@@ -196,6 +196,17 @@ const AnswerSchema = new mongoose.Schema({
         default: "PENDING"
     },
 
+    assessmentStatus: {
+        type: String,
+        enum: [
+            "PENDING",
+            "PROCESSING",
+            "COMPLETED",
+            "FAILED"
+        ],
+        default: "PENDING"
+    },
+
     ocrCompletedAt: {
         type: Date
     },
