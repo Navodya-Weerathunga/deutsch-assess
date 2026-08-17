@@ -154,6 +154,18 @@ async function processOCR(answerId) {
             );
         }
 
+        // =========================================
+        // Set AI assessment status
+        // =========================================
+
+        answer.assessmentStatus = "PROCESSING";
+
+        await answer.save();
+
+        console.log(
+            "Assessment status: PROCESSING"
+        );
+
         const cefr =
             assessment.level.toUpperCase();
 
@@ -265,6 +277,9 @@ async function processOCR(answerId) {
             Number(
                 totalMarksAwarded.toFixed(2)
             );
+        
+        answer.assessmentStatus =
+            "COMPLETED";
 
         answer.status =
             "MARKED";
@@ -290,14 +305,9 @@ async function processOCR(answerId) {
     catch (error) {
 
         console.error(
-            "OCR processing failed:",
+            "Answer processing failed:",
             error
         );
-
-
-        // -------------------------------------
-        // Update failed status
-        // -------------------------------------
 
         try {
 
@@ -306,25 +316,52 @@ async function processOCR(answerId) {
                     answerId
                 );
 
-
             if (answer) {
 
-                answer.ocrStatus =
-                    "FAILED";
+                // -----------------------------------------
+                // OCR failed
+                // -----------------------------------------
 
-                answer.ocrError =
-                    error.message;
+                if (
+                    answer.ocrStatus !== "COMPLETED"
+                ) {
+
+                    answer.ocrStatus =
+                        "FAILED";
+
+                    answer.ocrError =
+                        error.message;
+
+                    console.error(
+                        "OCR failed."
+                    );
+
+                }
+
+                // -----------------------------------------
+                // OCR succeeded, AI assessment failed
+                // -----------------------------------------
+
+                else {
+
+                    answer.assessmentStatus =
+                        "FAILED";
+
+                    console.error(
+                        "AI assessment failed after OCR completed."
+                    );
+
+                }
 
                 await answer.save();
 
             }
 
         }
-
         catch (updateError) {
 
             console.error(
-                "Failed to update OCR status:",
+                "Failed to update answer status:",
                 updateError
             );
 
