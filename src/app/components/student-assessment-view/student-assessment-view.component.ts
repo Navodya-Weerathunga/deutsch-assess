@@ -43,6 +43,20 @@ export class StudentAssessmentViewComponent implements OnInit {
 
   successMessage = '';
 
+  // =====================================
+  // Assessment Result
+  // =====================================
+
+  answerId: string | null = null;
+
+  assessmentResult: any = null;
+
+  isEvaluating = false;
+
+  evaluationError = '';
+
+  private evaluationInterval: any = null;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -325,13 +339,28 @@ export class StudentAssessmentViewComponent implements OnInit {
             response
           );
 
+          // ---------------------------------
+          // Store answerId for result checking
+          // ---------------------------------
+
+          this.answerId =
+            response.answerId || null;
+          
+
+          // ---------------------------------
+          // Start evaluation state
+          // ---------------------------------  
 
           this.isLoading = false;
 
+          this.isEvaluating = true;
+
+          this.evaluationError = '';
 
           this.successMessage =
             response.msg ||
-            'Your answers have been uploaded successfully.';
+            'Your answers have been uploaded successfully.' +
+            ' Your assessment is now being evaluated.';
 
 
           // Clear selected file
@@ -353,19 +382,11 @@ export class StudentAssessmentViewComponent implements OnInit {
 
           }
 
+          // -----------------------------------
+          // Start checking assessment result
+          // -----------------------------------
 
-          alert(
-            'Your answers have been submitted successfully.'
-          );
-
-
-          // ---------------------------------
-          // Return to Assessment List
-          // ---------------------------------
-
-          this.router.navigate([
-            '/student/assessments'
-          ]);
+          this.startEvaluationPolling();
 
         },
 
@@ -397,6 +418,156 @@ export class StudentAssessmentViewComponent implements OnInit {
         }
 
       });
+
+  }
+
+
+  // =====================================
+  // Check Assessment Result
+  // =====================================
+
+  checkAssessmentResult(): void {
+
+    if (!this.answerId) {
+      return;
+    }
+
+    console.log(
+      'Checking assessment result:',
+      this.answerId
+    );
+
+    this.answerService
+      .getAnswerResult(this.answerId)
+      .subscribe({
+
+        next: (response) => {
+
+          console.log(
+            'Assessment result:',
+            response
+          );
+
+          // -----------------------------------
+          // Store current result
+          // -----------------------------------
+
+          this.assessmentResult = response;
+
+
+          // -----------------------------------
+          // Assessment completed
+          // -----------------------------------
+
+          if (
+            response.assessmentStatus ===
+            'COMPLETED'
+          ) {
+
+            console.log(
+              'Assessment evaluation completed.'
+            );
+
+            this.isEvaluating = false;
+
+            this.stopEvaluationPolling();
+
+            return;
+          }
+
+
+          // -----------------------------------
+          // Assessment failed
+          // -----------------------------------
+
+          if (
+            response.assessmentStatus ===
+            'FAILED'
+          ) {
+
+            console.error(
+              'Assessment evaluation failed.'
+            );
+
+            this.isEvaluating = false;
+
+            this.evaluationError =
+              'Your answers were uploaded, but the assessment could not be evaluated.';
+
+            this.stopEvaluationPolling();
+
+            return;
+          }
+
+
+          // -----------------------------------
+          // Still processing
+          // -----------------------------------
+
+          this.isEvaluating = true;
+
+        },
+
+        error: (err) => {
+
+          console.error(
+            'Error checking assessment result:',
+            err
+          );
+
+          this.evaluationError =
+            err.error?.msg ||
+            'Unable to check assessment result.';
+
+          this.isEvaluating = false;
+
+          this.stopEvaluationPolling();
+
+        }
+
+      });
+
+  }
+
+  // =====================================
+  // Start Result Polling
+  // =====================================
+
+  startEvaluationPolling(): void {
+
+    // Prevent duplicate polling
+    this.stopEvaluationPolling();
+
+
+    // Check immediately
+    this.checkAssessmentResult();
+
+
+    // Then check every 3 seconds
+    this.evaluationInterval =
+      setInterval(() => {
+
+        this.checkAssessmentResult();
+
+      }, 3000);
+
+  }
+
+  // =====================================
+  // Stop Result Polling
+  // =====================================
+
+  stopEvaluationPolling(): void {
+
+    if (this.evaluationInterval) {
+
+      clearInterval(
+        this.evaluationInterval
+      );
+
+      this.evaluationInterval = null;
+
+    }
 
   }
 

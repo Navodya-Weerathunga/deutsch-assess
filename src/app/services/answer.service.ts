@@ -55,4 +55,19 @@ export class AnswerService {
 
   }
 
+  // =====================================
+  // Get Answer Result
+  // =====================================
+
+  getAnswerResult(answerId: string): Observable<any> {
+
+      return this.http.get<any>(
+          `${this.apiUrl}/${answerId}`,
+          {
+              withCredentials: true
+          }
+      );
+
+  }
+
 }

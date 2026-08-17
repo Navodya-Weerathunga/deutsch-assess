@@ -489,6 +489,154 @@
                     </button>
 
 
+                    <!-- ===================================== -->
+                    <!-- Assessment Evaluation Status -->
+                    <!-- ===================================== -->
+
+                    <div
+                        class="evaluation-status"
+                        *ngIf="isEvaluating">
+
+                        <mat-spinner
+                            diameter="35">
+                        </mat-spinner>
+
+                        <div class="evaluation-status-content">
+
+                            <h3>
+                                Your answers are being evaluated
+                            </h3>
+
+                            <p>
+                                Your answer sheet has been processed successfully.
+                                The AI assessment is now evaluating your answers.
+                            </p>
+
+                            <span>
+                                Please wait. This may take a little while.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ===================================== -->
+                    <!-- Assessment Result -->
+                    <!-- ===================================== -->
+
+                    <div
+                        class="assessment-result"
+                        *ngIf="
+                            !isEvaluating &&
+                            assessmentResult?.assessmentStatus === 'COMPLETED'
+                        ">
+
+                        <!-- Result Header -->
+
+                        <div class="result-header">
+
+                            <mat-icon>
+                                check_circle
+                            </mat-icon>
+
+                            <div>
+
+                                <h2>
+                                    Assessment Completed
+                                </h2>
+
+                                <p>
+                                    Your answers have been evaluated successfully.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Total Score -->
+
+                        <div class="total-score">
+
+                            <span class="score-label">
+                                Your Score
+                            </span>
+
+                            <div class="score-value">
+
+                                {{
+                                    assessmentResult.totalMarksAwarded
+                                        | number:'1.2-2'
+                                }}
+
+                                <span>
+                                    /
+                                    {{ assessment.totalMarks }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Question Results -->
+
+                        <div
+                            class="question-results"
+                            *ngIf="
+                                assessmentResult.questionResults?.length
+                            ">
+
+                            <h3>
+                                Question Results
+                            </h3>
+
+
+                            <div
+                                class="result-row"
+                                *ngFor="
+                                    let result of assessmentResult.questionResults
+                                ">
+
+                                <div class="result-question">
+
+                                    <span class="result-number">
+                                        {{ result.questionNo }}
+                                    </span>
+
+                                    <span>
+                                        Question {{ result.questionNo }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="result-marks">
+
+                                    <strong>
+                                        {{
+                                            result.awardedMarks
+                                                | number:'1.2-2'
+                                        }}
+                                    </strong>
+
+                                    <span>
+                                        /
+                                        {{
+                                            result.allocatedMarks
+                                                | number:'1.0-2'
+                                        }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
                 </mat-card>
 
 

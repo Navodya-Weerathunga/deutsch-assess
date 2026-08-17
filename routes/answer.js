@@ -724,6 +724,112 @@ router.post(
 );
 
 
+
+// =====================================================
+// Get Student Answer Result / Status
+// =====================================================
+
+router.get(
+    "/:answerId",
+    verifyToken,
+    checkRole("STUDENT"),
+    async (req, res) => {
+
+        try {
+
+            const { answerId } = req.params;
+
+            // -----------------------------------------
+            // Find Answer
+            // -----------------------------------------
+
+            const answer =
+                await Answer.findById(answerId)
+                    .populate(
+                        "assessment",
+                        "title level totalMarks"
+                    );
+
+            if (!answer) {
+
+                return res.status(404).json({
+                    msg: "Answer submission not found."
+                });
+
+            }
+
+            // -----------------------------------------
+            // Security Check
+            // -----------------------------------------
+
+            if (
+                answer.student.toString() !==
+                req.user.id.toString()
+            ) {
+
+                return res.status(403).json({
+                    msg:
+                        "You are not authorized to view this result."
+                });
+
+            }
+
+            // -----------------------------------------
+            // Return Current Status
+            // -----------------------------------------
+
+            return res.status(200).json({
+
+                answerId:
+                    answer._id,
+
+                assessment:
+                    answer.assessment,
+
+                status:
+                    answer.status,
+
+                ocrStatus:
+                    answer.ocrStatus,
+
+                assessmentStatus:
+                    answer.assessmentStatus,
+
+                totalMarksAwarded:
+                    answer.totalMarksAwarded,
+
+                questionResults:
+                    answer.status === "MARKED"
+                        ? answer.questionResults
+                        : [],
+
+                markedAt:
+                    answer.markedAt || null
+
+            });
+
+        }
+        catch (error) {
+
+            console.error(
+                "Error getting answer result:",
+                error
+            );
+
+            return res.status(500).json({
+                msg:
+                    "Failed to retrieve answer result.",
+                error:
+                    error.message
+            });
+
+        }
+
+    }
+);
+
+
+
 // =====================================================
 // Multer / Upload Error Handler
 // =====================================================
