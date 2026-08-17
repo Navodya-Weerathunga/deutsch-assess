@@ -5,6 +5,7 @@ const express = require("express");
 const router = express.Router();
 
 const fs = require("fs");
+const path = require("path");
 
 const User = require("../models/User");
 const Assessment = require("../models/Assessment");
@@ -723,6 +724,223 @@ router.post(
     }
 );
 
+
+// =====================================================
+// Get Student Assessment Results
+// =====================================================
+
+router.get(
+    "/",
+    verifyToken,
+    checkRole("STUDENT"),
+    async (req, res) => {
+
+        try {
+
+            const answers =
+                await Answer.find({
+                    student: req.user.id
+                })
+                .populate(
+                    "assessment",
+                    "title topic level totalMarks"
+                )
+                .sort({
+                    submittedAt: -1
+                });
+
+
+            return res.status(200).json(
+                answers.map(answer => ({
+
+                    answerId:
+                        answer._id,
+
+                    assessment:
+                        answer.assessment,
+
+                    status:
+                        answer.status,
+
+                    ocrStatus:
+                        answer.ocrStatus,
+
+                    assessmentStatus:
+                        answer.assessmentStatus,
+
+                    totalMarksAwarded:
+                        answer.totalMarksAwarded,
+
+                    submittedAt:
+                        answer.submittedAt,
+
+                    markedAt:
+                        answer.markedAt,
+
+                    answerFile: {
+
+                        fileName:
+                            answer.answerFile?.fileName,
+
+                        fileType:
+                            answer.answerFile?.fileType
+
+                    }
+
+                }))
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Error getting student assessment results:",
+                error
+            );
+
+            return res.status(500).json({
+                msg:
+                    "Failed to retrieve assessment results."
+            });
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// Get Uploaded Answer Sheet
+// =====================================================
+
+router.get(
+    "/:answerId/file",
+    verifyToken,
+    checkRole("STUDENT"),
+    async (req, res) => {
+
+        try {
+
+            const {
+                answerId
+            } = req.params;
+
+
+            // -----------------------------------------
+            // Find Answer
+            // -----------------------------------------
+
+            const answer =
+                await Answer.findById(
+                    answerId
+                );
+
+
+            if (!answer) {
+
+                return res.status(404).json({
+                    msg:
+                        "Answer submission not found."
+                });
+
+            }
+
+
+            // -----------------------------------------
+            // Security Check
+            // -----------------------------------------
+
+            if (
+                answer.student.toString() !==
+                req.user.id.toString()
+            ) {
+
+                return res.status(403).json({
+                    msg:
+                        "You are not authorized to view this answer sheet."
+                });
+
+            }
+
+
+            // -----------------------------------------
+            // Check File
+            // -----------------------------------------
+
+            if (
+                !answer.answerFile ||
+                !answer.answerFile.filePath
+            ) {
+
+                return res.status(404).json({
+                    msg:
+                        "Answer sheet file not found."
+                });
+
+            }
+
+
+            const filePath =
+                path.resolve(
+                    answer.answerFile.filePath
+                );
+
+
+            // -----------------------------------------
+            // Check Physical File
+            // -----------------------------------------
+
+            if (!fs.existsSync(filePath)) {
+
+                return res.status(404).json({
+                    msg:
+                        "Answer sheet file no longer exists."
+                });
+
+            }
+
+
+            // -----------------------------------------
+            // Set Content Type
+            // -----------------------------------------
+
+            res.setHeader(
+                "Content-Type",
+                answer.answerFile.fileType
+            );
+
+
+            res.setHeader(
+                "Content-Disposition",
+                `inline; filename="${answer.answerFile.fileName}"`
+            );
+
+
+            // -----------------------------------------
+            // Send File
+            // -----------------------------------------
+
+            return res.sendFile(
+                filePath
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Error retrieving answer sheet:",
+                error
+            );
+
+            return res.status(500).json({
+                msg:
+                    "Failed to retrieve answer sheet."
+            });
+
+        }
+
+    }
+);
 
 
 // =====================================================
