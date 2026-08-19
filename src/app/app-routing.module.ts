@@ -51,6 +51,9 @@ export const routes: Routes = [
 
     // Student results route
     {path: 'my-results', loadComponent: () => import('./components/student-results/student-results.component').then(m => m.StudentResultsComponent)},
+
+    // Admin results route
+    {path: 'admin-results', loadComponent: () => import('./components/admin-view-results/admin-view-results.component').then(m => m.AdminResultsComponent)}
 ]
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

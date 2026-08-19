@@ -372,6 +372,297 @@ async function processOCR(answerId) {
 
 }
 
+
+// =====================================================
+// Get All Student Assessment Results - Admin
+// =====================================================
+
+router.get(
+    "/admin/results",
+    verifyToken,
+    checkRole("ADMIN"),
+    async (req, res) => {
+
+        try {
+
+            // -----------------------------------------
+            // Get Filters
+            // -----------------------------------------
+
+            const {
+                level,
+                batch,
+                search
+            } = req.query;
+
+
+            // -----------------------------------------
+            // Build Student Filter
+            // -----------------------------------------
+
+            const studentFilter = {
+                role: "STUDENT"
+            };
+
+
+            // -----------------------------------------
+            // Batch Filter
+            // -----------------------------------------
+
+            if (batch) {
+
+                studentFilter.batch = batch;
+
+            }
+
+
+            // -----------------------------------------
+            // Search Filter
+            // -----------------------------------------
+
+            if (search) {
+
+                const searchRegex =
+                    new RegExp(
+                        search,
+                        "i"
+                    );
+
+
+                studentFilter.$or = [
+
+                    {
+                        firstName:
+                            searchRegex
+                    },
+
+                    {
+                        lastName:
+                            searchRegex
+                    },
+
+                    {
+                        regNo:
+                            searchRegex
+                    }
+
+                ];
+
+            }
+
+
+            // -----------------------------------------
+            // Find Students
+            // -----------------------------------------
+
+            const students =
+                await User.find(
+                    studentFilter
+                ).select(
+                    "_id firstName lastName regNo batch assignedCourses"
+                );
+
+
+            // -----------------------------------------
+            // If No Students
+            // -----------------------------------------
+
+            if (students.length === 0) {
+
+                return res.status(200).json([]);
+
+            }
+
+
+            // -----------------------------------------
+            // Student IDs
+            // -----------------------------------------
+
+            const studentIds =
+                students.map(
+                    student =>
+                        student._id
+                );
+
+
+            // -----------------------------------------
+            // Build Answer Filter
+            // -----------------------------------------
+
+            const answerFilter = {
+
+                student: {
+                    $in: studentIds
+                },
+
+                status: "MARKED"
+
+            };
+
+
+            // -----------------------------------------
+            // Get Marked Answers
+            // -----------------------------------------
+
+            let answers =
+                await Answer.find(
+                    answerFilter
+                )
+                .populate(
+                    "student",
+                    "_id firstName lastName regNo batch assignedCourses"
+                )
+                .populate(
+                    "assessment",
+                    "_id title level totalMarks"
+                )
+                .populate(
+                    "class",
+                    "_id topic classDate batch medium level"
+                )
+                .sort({
+                    markedAt: -1
+                });
+
+
+            // -----------------------------------------
+            // Level Filter
+            // -----------------------------------------
+
+            if (level) {
+
+                answers =
+                    answers.filter(
+                        answer => {
+
+                            return (
+                                answer.class &&
+                                answer.class.level === level
+                            );
+
+                        }
+                    );
+
+            }
+
+
+            // -----------------------------------------
+            // Format Response
+            // -----------------------------------------
+
+            const results =
+                answers.map(
+                    answer => ({
+
+                        answerId:
+                            answer._id,
+
+                        student: {
+
+                            _id:
+                                answer.student?._id,
+
+                            firstName:
+                                answer.student?.firstName,
+
+                            lastName:
+                                answer.student?.lastName,
+
+                            regNo:
+                                answer.student?.regNo,
+
+                            batch:
+                                answer.student?.batch,
+
+                            assignedCourses:
+                                answer.student?.assignedCourses
+
+                        },
+
+                        assessment: {
+
+                            _id:
+                                answer.assessment?._id,
+
+                            title:
+                                answer.assessment?.title,
+
+                            level:
+                                answer.assessment?.level,
+
+                            totalMarks:
+                                answer.assessment?.totalMarks
+
+                        },
+
+                        class: {
+
+                            _id:
+                                answer.class?._id,
+
+                            topic:
+                                answer.class?.topic,
+
+                            classDate:
+                                answer.class?.classDate,
+
+                            batch:
+                                answer.class?.batch,
+
+                            medium:
+                                answer.class?.medium,
+
+                            level:
+                                answer.class?.level
+
+                        },
+
+                        totalMarksAwarded:
+                            answer.totalMarksAwarded,
+
+                        status:
+                            answer.status,
+
+                        submittedAt:
+                            answer.submittedAt,
+
+                        markedAt:
+                            answer.markedAt
+
+                    })
+                );
+
+
+            // -----------------------------------------
+            // Send Results
+            // -----------------------------------------
+
+            return res.status(200).json(
+                results
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Error loading admin assessment results:",
+                error
+            );
+
+
+            return res.status(500).json({
+
+                msg:
+                    "Failed to load assessment results."
+
+            });
+
+        }
+
+    }
+);
+
+
 // =====================================================
 // Submit Student Answers
 // =====================================================
@@ -944,18 +1235,18 @@ router.get(
 
 
 // =====================================================
-// Get Student Answer Result / Status
+// Get Student / Admin Answer Result
 // =====================================================
 
 router.get(
     "/:answerId",
     verifyToken,
-    checkRole("STUDENT"),
     async (req, res) => {
 
         try {
 
             const { answerId } = req.params;
+
 
             // -----------------------------------------
             // Find Answer
@@ -965,35 +1256,63 @@ router.get(
                 await Answer.findById(answerId)
                     .populate(
                         "assessment",
-                        "title level totalMarks"
+                        "title topic level totalMarks questions"
+                    )
+                    .populate(
+                        "student",
+                        "firstName lastName regNo batch"
+                    )
+                    .populate(
+                        "class",
+                        "topic classDate batch medium level"
                     );
+
 
             if (!answer) {
 
                 return res.status(404).json({
-                    msg: "Answer submission not found."
+
+                    msg:
+                        "Answer submission not found."
+
                 });
 
             }
 
+
             // -----------------------------------------
-            // Security Check
+            // Authorization
             // -----------------------------------------
 
-            if (
-                answer.student.toString() !==
-                req.user.id.toString()
-            ) {
+            const isAdmin =
+                req.user.role === "ADMIN";
+
+
+            const isOwner =
+                answer.student &&
+                answer.student._id.toString() ===
+                req.user.id.toString();
+
+
+            // -----------------------------------------
+            // Student can only view own result
+            // Admin can view any result
+            // -----------------------------------------
+
+            if (!isAdmin && !isOwner) {
 
                 return res.status(403).json({
+
                     msg:
                         "You are not authorized to view this result."
+
                 });
 
             }
 
+
             // -----------------------------------------
-            // Return Current Status
+            // Return Result
             // -----------------------------------------
 
             return res.status(200).json({
@@ -1001,8 +1320,14 @@ router.get(
                 answerId:
                     answer._id,
 
+                student:
+                    answer.student,
+
                 assessment:
                     answer.assessment,
+
+                class:
+                    answer.class,
 
                 status:
                     answer.status,
@@ -1022,7 +1347,10 @@ router.get(
                         : [],
 
                 markedAt:
-                    answer.markedAt || null
+                    answer.markedAt || null,
+
+                submittedAt:
+                    answer.submittedAt || null
 
             });
 
@@ -1034,18 +1362,21 @@ router.get(
                 error
             );
 
+
             return res.status(500).json({
+
                 msg:
                     "Failed to retrieve answer result.",
+
                 error:
                     error.message
+
             });
 
         }
 
     }
 );
-
 
 
 // =====================================================

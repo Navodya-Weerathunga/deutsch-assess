@@ -70,6 +70,43 @@ export class AnswerService {
 
   }
 
+
+  // =====================================
+  // Get All Student Results - Admin
+  // =====================================
+
+  getAdminResults(
+    level?: string,
+    batch?: string,
+    search?: string
+  ): Observable<any[]> {
+
+    let params: any = {};
+
+    if (level) {
+      params.level = level;
+    }
+
+    if (batch) {
+      params.batch = batch;
+    }
+
+    if (search) {
+      params.search = search;
+    }
+
+
+    return this.http.get<any[]>(
+      `${this.apiUrl}/admin/results`,
+      {
+        params,
+        withCredentials: true
+      }
+    );
+
+  }
+  
+
   // =====================================
   // Get Answer Result
   // =====================================
