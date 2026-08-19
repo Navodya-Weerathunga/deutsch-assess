@@ -1,0 +1,206 @@
+<div class="student-results-page">
+
+    <!-- Student Sidebar -->
+
+    <app-student-navbar></app-student-navbar>
+
+
+  <!-- ===================================== -->
+  <!-- Page Header -->
+  <!-- ===================================== -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        My Assessment Results
+      </h1>
+
+      <p>
+        View the results of your completed assessments.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===================================== -->
+  <!-- Loading -->
+  <!-- ===================================== -->
+
+  <div
+    class="loading-container"
+    *ngIf="isLoading">
+
+    <mat-spinner
+      diameter="40">
+    </mat-spinner>
+
+    <p>
+      Loading your assessment results...
+    </p>
+
+  </div>
+
+
+  <!-- ===================================== -->
+  <!-- Error -->
+  <!-- ===================================== -->
+
+  <div
+    class="error-message"
+    *ngIf="!isLoading && errorMessage">
+
+    {{ errorMessage }}
+
+  </div>
+
+
+  <!-- ===================================== -->
+  <!-- No Results -->
+  <!-- ===================================== -->
+
+  <div
+    class="empty-state"
+    *ngIf="
+      !isLoading &&
+      !errorMessage &&
+      results.length === 0
+    ">
+
+    <mat-icon>
+      assignment
+    </mat-icon>
+
+    <h2>
+      No completed assessments
+    </h2>
+
+    <p>
+      Your completed assessment results will
+      appear here.
+    </p>
+
+  </div>
+
+
+  <!-- ===================================== -->
+  <!-- Results -->
+  <!-- ===================================== -->
+
+  <div
+    class="results-list"
+    *ngIf="
+      !isLoading &&
+      !errorMessage &&
+      results.length > 0
+    ">
+
+
+    <div
+      class="result-card"
+      *ngFor="let result of results">
+
+
+      <!-- Assessment Information -->
+
+      <div class="result-info">
+
+        <h2>
+          {{ result.assessment?.title }}
+        </h2>
+
+        <p class="topic">
+          {{ result.assessment?.topic }}
+        </p>
+
+        <div class="assessment-meta">
+
+          <span>
+            Level:
+            <strong>
+              {{ result.assessment?.level }}
+            </strong>
+          </span>
+
+          <span>
+            Total Marks:
+            <strong>
+              {{ result.assessment?.totalMarks }}
+            </strong>
+          </span>
+
+          <span
+            *ngIf="result.markedAt">
+
+            Marked:
+            <strong>
+              {{ result.markedAt | date:'mediumDate' }}
+            </strong>
+
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- Score -->
+
+      <div class="result-score">
+
+        <span>
+          Score
+        </span>
+
+        <strong>
+          {{
+            result.totalMarksAwarded
+              | number:'1.2-2'
+          }}
+        </strong>
+
+        <small>
+          /
+          {{ result.assessment?.totalMarks }}
+        </small>
+
+      </div>
+
+
+      <!-- Status -->
+
+      <div class="result-status">
+
+        <span
+          class="status-completed">
+
+          Completed
+
+        </span>
+
+      </div>
+
+
+      <!-- View Button -->
+
+      <button
+        mat-raised-button
+        color="primary">
+
+        <mat-icon>
+          visibility
+        </mat-icon>
+
+        View Report
+
+      </button>
+
+
+    </div>
+
+  </div>
+
+</div>

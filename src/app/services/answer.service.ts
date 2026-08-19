@@ -54,6 +54,21 @@ export class AnswerService {
     );
 
   }
+  
+  // =====================================
+  // Get All Student Assessment Results
+  // =====================================
+
+  getStudentResults(): Observable<any[]> {
+
+    return this.http.get<any[]>(
+      this.apiUrl,
+      {
+        withCredentials: true
+      }
+    );
+
+  }
 
   // =====================================
   // Get Answer Result
@@ -67,6 +82,24 @@ export class AnswerService {
               withCredentials: true
           }
       );
+
+  }
+
+  // =====================================
+  // Get Uploaded Answer Sheet
+  // =====================================
+
+  getAnswerFile(
+    answerId: string
+  ): Observable<Blob> {
+
+    return this.http.get(
+      `${this.apiUrl}/${answerId}/file`,
+      {
+        withCredentials: true,
+        responseType: 'blob'
+      }
+    );
 
   }
 
