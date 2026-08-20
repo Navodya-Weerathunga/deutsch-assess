@@ -1346,6 +1346,9 @@ router.get(
                         ? answer.questionResults
                         : [],
 
+                ocrAnswers:
+                    answer.ocrAnswers || [],
+
                 markedAt:
                     answer.markedAt || null,
 

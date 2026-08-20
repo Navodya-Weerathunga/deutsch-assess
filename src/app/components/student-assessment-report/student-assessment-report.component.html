@@ -1,0 +1,627 @@
+<div class="assessment-report-page">
+
+  <!-- =========================================
+       Page Header
+  ========================================== -->
+
+  <div class="report-header">
+
+    <div class="header-content">
+
+      <button
+        mat-icon-button
+        class="back-button"
+        type="button"
+        (click)="goBack()">
+
+        <mat-icon>
+          arrow_back
+        </mat-icon>
+
+      </button>
+
+      <div>
+
+        <h1>
+          Assessment Report
+        </h1>
+
+        <p>
+          View your detailed assessment result and feedback.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================================
+       Loading
+  ========================================== -->
+
+  <div
+    class="loading-container"
+    *ngIf="isLoading">
+
+    <mat-spinner
+      diameter="45">
+    </mat-spinner>
+
+    <p>
+      Loading assessment report...
+    </p>
+
+  </div>
+
+
+  <!-- =========================================
+       Error
+  ========================================== -->
+
+  <div
+    class="error-container"
+    *ngIf="
+      !isLoading &&
+      errorMessage
+    ">
+
+    <mat-icon>
+      error_outline
+    </mat-icon>
+
+    <h2>
+      Unable to Load Report
+    </h2>
+
+    <p>
+      {{ errorMessage }}
+    </p>
+
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="goBack()">
+
+      <mat-icon>
+        arrow_back
+      </mat-icon>
+
+      Go Back
+
+    </button>
+
+  </div>
+
+
+  <!-- =========================================
+       Report
+  ========================================== -->
+
+  <div
+    class="report-container"
+    *ngIf="
+      !isLoading &&
+      !errorMessage &&
+      result
+    ">
+
+
+    <!-- =======================================
+         Assessment Information
+    ======================================== -->
+
+    <section class="assessment-info-card">
+
+      <div class="assessment-info">
+
+        <span class="report-label">
+          ASSESSMENT
+        </span>
+
+        <h2>
+          {{ result.assessment?.title }}
+        </h2>
+
+        <p
+          class="assessment-topic"
+          *ngIf="result.assessment?.topic">
+
+          {{ result.assessment?.topic }}
+
+        </p>
+
+        <div class="assessment-meta">
+
+          <div>
+
+            <span>
+              Level
+            </span>
+
+            <strong>
+              {{ result.assessment?.level || '-' }}
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>
+              Total Marks
+            </span>
+
+            <strong>
+              {{ getTotalMarks() }}
+            </strong>
+
+          </div>
+
+          <div>
+
+            <span>
+              Marked
+            </span>
+
+            <strong>
+
+              {{
+                result.markedAt
+                  ? (result.markedAt | date:'mediumDate')
+                  : '-'
+              }}
+
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- Score -->
+
+      <div class="overall-score">
+
+        <span>
+          FINAL SCORE
+        </span>
+
+        <strong>
+          {{
+            getAwardedMarks()
+              | number:'1.2-2'
+          }}
+        </strong>
+
+        <small>
+          / {{ getTotalMarks() }}
+        </small>
+
+        <div class="percentage">
+
+          {{
+            getPercentage()
+              | number:'1.0-1'
+          }}%
+
+        </div>
+
+        <span class="completed-badge">
+
+          <mat-icon>
+            check_circle
+          </mat-icon>
+
+          Completed
+
+        </span>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================
+         Student Information
+    ======================================== -->
+
+    <section
+      class="student-info-card"
+      *ngIf="result.student">
+
+      <div class="section-title">
+
+        <mat-icon>
+          person
+        </mat-icon>
+
+        <h2>
+          Student Information
+        </h2>
+
+      </div>
+
+
+      <div class="student-details">
+
+        <div>
+
+          <span>
+            Student Name
+          </span>
+
+          <strong>
+            {{ getStudentName() }}
+          </strong>
+
+        </div>
+
+        <div>
+
+          <span>
+            Registration Number
+          </span>
+
+          <strong>
+            {{ result.student?.regNo || '-' }}
+          </strong>
+
+        </div>
+
+        <div>
+
+          <span>
+            Batch
+          </span>
+
+          <strong>
+            {{ getStudentBatch() }}
+          </strong>
+
+        </div>
+
+        <div>
+
+          <span>
+            Level
+          </span>
+
+          <strong>
+            {{ result.assessment?.level || '-' }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================
+         Questions Header
+    ======================================== -->
+
+    <div class="questions-header">
+
+      <div>
+
+        <h2>
+          Question-by-Question Results
+        </h2>
+
+        <p>
+          Review your answers and the marks awarded for each question.
+        </p>
+
+      </div>
+
+      <span class="question-count">
+
+        {{
+          result.assessment?.questions?.length || 0
+        }}
+
+        Questions
+
+      </span>
+
+    </div>
+
+
+    <!-- =======================================
+         Question Results
+    ======================================== -->
+
+    <div class="question-list">
+
+
+      <div
+        class="question-card"
+        *ngFor="
+          let question of result.assessment?.questions;
+          let i = index
+        ">
+
+
+        <!-- Question Header -->
+
+        <div class="question-header">
+
+          <div class="question-number">
+
+            Q{{ question.questionNo }}
+
+          </div>
+
+          <div class="question-title">
+
+            <span>
+              Question {{ question.questionNo }}
+            </span>
+
+            <h3>
+              {{ question.question }}
+            </h3>
+
+          </div>
+
+          <div class="question-score">
+
+            <strong>
+
+              {{
+                getQuestionAwardedMarks(
+                  question.questionNo
+                )
+                | number:'1.2-2'
+              }}
+
+            </strong>
+
+            <span>
+              /
+              {{ getQuestionMaximumMarks(question) }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- English Question -->
+
+        <div
+          class="english-question"
+          *ngIf="question.englishQuestion">
+
+          <mat-icon>
+            translate
+          </mat-icon>
+
+          <span>
+            {{ question.englishQuestion }}
+          </span>
+
+        </div>
+
+
+        <!-- Student Answer -->
+
+        <div class="answer-section">
+
+          <div class="subsection-title">
+
+            <mat-icon>
+              edit_note
+            </mat-icon>
+
+            <span>
+              Student Answer
+            </span>
+
+          </div>
+
+          <div class="student-answer">
+
+            {{
+              getStudentAnswer(
+                question.questionNo
+              )
+            }}
+
+          </div>
+
+        </div>
+
+
+        <!-- AI Evaluation -->
+
+        <div class="evaluation-section">
+
+          <div class="subsection-title">
+
+            <mat-icon>
+              smart_toy
+            </mat-icon>
+
+            <span>
+              AI Evaluation
+            </span>
+
+          </div>
+
+
+          <div class="evaluation-grid">
+
+
+            <!-- Task Completion -->
+
+            <div class="evaluation-item">
+
+              <span>
+                Task Completion
+              </span>
+
+              <strong>
+
+                {{
+                  getTaskCompletionPercentage(
+                    question.questionNo
+                  )
+                  | number:'1.0-0'
+                }}%
+
+              </strong>
+
+            </div>
+
+
+            <!-- Language Score -->
+
+            <div class="evaluation-item">
+
+              <span>
+                Language Score
+              </span>
+
+              <strong>
+
+                {{
+                  getLanguageScore(
+                    question.questionNo
+                  )
+                  | number:'1.2-2'
+                }}
+
+                / 10
+
+              </strong>
+
+            </div>
+
+
+            <!-- XLM-R Score -->
+
+            <div class="evaluation-item">
+
+              <span>
+                XLM-R Score
+              </span>
+
+              <strong>
+
+                {{
+                  getXlmScore(
+                    question.questionNo
+                  )
+                  | number:'1.2-2'
+                }}
+
+                / 10
+
+              </strong>
+
+            </div>
+
+
+            <!-- Awarded -->
+
+            <div class="evaluation-item awarded">
+
+              <span>
+                Marks Awarded
+              </span>
+
+              <strong>
+
+                {{
+                  getQuestionAwardedMarks(
+                    question.questionNo
+                  )
+                  | number:'1.2-2'
+                }}
+
+                /
+                {{ question.marks }}
+
+              </strong>
+
+            </div>
+
+          </div>
+
+
+       
+
+
+      </div>
+
+    </div>
+
+
+    <!-- =======================================
+         Final Summary
+    ======================================== -->
+
+    <section class="final-summary">
+
+      <div>
+
+        <span>
+          Final Assessment Score
+        </span>
+
+        <strong>
+
+          {{
+            getAwardedMarks()
+              | number:'1.2-2'
+          }}
+
+          / {{ getTotalMarks() }}
+
+        </strong>
+
+      </div>
+
+      <div class="final-percentage">
+
+        {{
+          getPercentage()
+            | number:'1.0-1'
+        }}%
+
+      </div>
+
+    </section>
+
+
+    <!-- =======================================
+         Back Button
+    ======================================== -->
+
+    <div class="report-actions">
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        (click)="goBack()">
+
+        <mat-icon>
+          arrow_back
+        </mat-icon>
+
+        Back to Results
+
+      </button>
+
+    </div>
+
+
+  </div>
+
+</div>

@@ -5,6 +5,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
+import { Router } from '@angular/router';
+
 import { AnswerService } from '../../services/answer.service';
 
 import { StudentNavbarComponent } from '../student-side-bar/student-side-bar.component';
@@ -51,9 +53,9 @@ export class StudentResultsComponent
 
   errorMessage = '';
 
-
   constructor(
-    private answerService: AnswerService
+    private answerService: AnswerService,
+    private router: Router
   ) {}
 
 
@@ -116,6 +118,31 @@ export class StudentResultsComponent
         }
 
       });
+
+  }
+
+  // =====================================
+  // View Report
+  // =====================================  
+
+  viewReport(result: any): void {
+
+    const answerId =
+      result?.answerId;
+
+    if (!answerId) {
+
+      console.error(
+        'Answer ID is missing from selected result.'
+      );
+
+      return;
+    }
+
+    this.router.navigate([
+      '/student-assessment-report',
+      answerId
+    ]);
 
   }
 

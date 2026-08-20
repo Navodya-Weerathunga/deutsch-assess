@@ -53,7 +53,10 @@ export const routes: Routes = [
     {path: 'my-results', loadComponent: () => import('./components/student-results/student-results.component').then(m => m.StudentResultsComponent)},
 
     // Admin results route
-    {path: 'admin-results', loadComponent: () => import('./components/admin-view-results/admin-view-results.component').then(m => m.AdminResultsComponent)}
+    {path: 'admin-results', loadComponent: () => import('./components/admin-view-results/admin-view-results.component').then(m => m.AdminResultsComponent)},
+
+    // Student assessment report route
+    {path: 'student-assessment-report/:answerId', loadComponent: () => import('./components/student-assessment-report/student-assessment-report.component').then(m => m.StudentAssessmentReportComponent)}
 ]
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

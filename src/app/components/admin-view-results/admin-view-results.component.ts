@@ -9,6 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
+import { Router } from '@angular/router';
+
 import { AnswerService } from '../../services/answer.service';
 
 import { AdminNavbarComponent } from '../admin-nav-bar/admin-nav-bar.component';
@@ -106,7 +108,8 @@ export class AdminResultsComponent
   // =========================================
 
   constructor(
-    private answerService: AnswerService
+    private answerService: AnswerService,
+    private router: Router
   ) {}
 
 
@@ -427,21 +430,38 @@ export class AdminResultsComponent
   // View Result
   // =========================================
 
-  viewResult(
-    result: any
-  ): void {
+
+    viewResult(result: any): void {
+
+    const answerId =
+        result?.answerId;
 
     console.log(
-      'Selected result:',
-      result
+        'Selected result:',
+        result
+    );
+
+    console.log(
+        'Answer ID:',
+        answerId
     );
 
 
-    /*
-     * We will connect this to the
-     * detailed admin result page later.
-     */
+    if (!answerId) {
 
-  }
+        console.error(
+        'Answer ID is missing from selected result.'
+        );
+
+        return;
+    }
+
+
+    this.router.navigate([
+        '/student-assessment-report',
+        answerId
+    ]);
+
+    }
 
 }
