@@ -173,8 +173,6 @@ async function processOCR(answerId) {
 
         const questionResults = [];
 
-        const feedbackQuestions = [];
-
         let totalMarksAwarded = 0;
 
 
@@ -269,22 +267,18 @@ async function processOCR(answerId) {
         const aiFeedback =
             await generateOverallFeedback({
 
-                level:
-                    assessment.level,
+                level: assessment.level,
 
-                assessmentTitle:
-                    assessment.title,
+                assessmentTitle: assessment.title,
 
-                totalMarks:
-                    assessment.totalMarks,
+                totalMarks: assessment.totalMarks,
 
                 totalMarksAwarded:
                     Number(
                         totalMarksAwarded.toFixed(2)
                     ),
 
-                questions:
-                    feedbackQuestions
+                questions: questionResults
 
             });
 
@@ -1365,6 +1359,9 @@ router.get(
 
                 ocrAnswers:
                     answer.ocrAnswers || [],
+
+                aiFeedback:
+                    answer.aiFeedback || null,
 
                 markedAt:
                     answer.markedAt || null,

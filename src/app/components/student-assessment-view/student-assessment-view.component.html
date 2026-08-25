@@ -634,6 +634,353 @@
 
                         </div>
 
+                        <!-- ========================================= -->
+                        <!-- AI Overall Feedback -->
+                        <!-- ========================================= -->
+
+                        <div
+                            class="ai-feedback"
+                            *ngIf="assessmentResult?.aiFeedback">
+
+                            <!-- Feedback Header -->
+
+                            <div class="ai-feedback-header">
+
+                                <mat-icon>
+                                    auto_awesome
+                                </mat-icon>
+
+                                <div>
+
+                                    <h3>
+                                        Overall Feedback
+                                    </h3>
+
+                                    <p>
+                                        Personalized feedback based on your
+                                        assessment performance.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Performance Level -->
+
+                            <div class="feedback-performance">
+
+                                <span class="feedback-label">
+                                    Overall Performance
+                                </span>
+
+                                <span class="performance-badge">
+                                    {{ assessmentResult.aiFeedback.performanceLevel }}
+                                </span>
+
+                            </div>
+
+
+                            <!-- Summary -->
+
+                            <div class="feedback-block">
+
+                                <h4>
+                                    Summary
+                                </h4>
+
+                                <p>
+                                    {{ assessmentResult.aiFeedback.summary }}
+                                </p>
+
+                            </div>
+
+
+                            <!-- Strengths -->
+
+                            <div class="feedback-block">
+
+                                <h4>
+                                    Your Strengths
+                                </h4>
+
+                                <ul>
+
+                                    <li
+                                        *ngFor="
+                                            let item
+                                            of assessmentResult.aiFeedback.strengths
+                                        ">
+
+                                        {{ item }}
+
+                                    </li>
+
+                                </ul>
+
+                            </div>
+
+
+                            <!-- Grammar -->
+
+                            <div class="feedback-category">
+
+                                <h4>
+                                    Grammar
+                                </h4>
+
+
+                                <div class="feedback-subcategory">
+
+                                    <h5>
+                                        Strengths
+                                    </h5>
+
+                                    <ul>
+
+                                        <li
+                                            *ngFor="
+                                                let item
+                                                of assessmentResult.aiFeedback
+                                                    .grammarFeedback?.strengths
+                                            ">
+
+                                            {{ item }}
+
+                                        </li>
+
+                                    </ul>
+
+                                </div>
+
+
+                                <div class="feedback-subcategory">
+
+                                    <h5>
+                                        Areas for Improvement
+                                    </h5>
+
+                                    <ul>
+
+                                        <li
+                                            *ngFor="
+                                                let item
+                                                of assessmentResult.aiFeedback
+                                                    .grammarFeedback?.areasForImprovement
+                                            ">
+
+                                            {{ item }}
+
+                                        </li>
+
+                                    </ul>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Vocabulary -->
+
+                            <div class="feedback-category">
+
+                                <h4>
+                                    Vocabulary
+                                </h4>
+
+
+                                <div class="feedback-subcategory">
+
+                                    <h5>
+                                        Strengths
+                                    </h5>
+
+                                    <ul>
+
+                                        <li
+                                            *ngFor="
+                                                let item
+                                                of assessmentResult.aiFeedback
+                                                    .vocabularyFeedback?.strengths
+                                            ">
+
+                                            {{ item }}
+
+                                        </li>
+
+                                    </ul>
+
+                                </div>
+
+
+                                <div class="feedback-subcategory">
+
+                                    <h5>
+                                        Areas for Improvement
+                                    </h5>
+
+                                    <ul>
+
+                                        <li
+                                            *ngFor="
+                                                let item
+                                                of assessmentResult.aiFeedback
+                                                    .vocabularyFeedback?.areasForImprovement
+                                            ">
+
+                                            {{ item }}
+
+                                        </li>
+
+                                    </ul>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Task Performance -->
+
+                            <div class="feedback-category">
+
+                                <h4>
+                                    Task Performance
+                                </h4>
+
+
+                                <div class="feedback-subcategory">
+
+                                    <h5>
+                                        Strengths
+                                    </h5>
+
+                                    <ul>
+
+                                        <li
+                                            *ngFor="
+                                                let item
+                                                of assessmentResult.aiFeedback
+                                                    .taskPerformance?.strengths
+                                            ">
+
+                                            {{ item }}
+
+                                        </li>
+
+                                    </ul>
+
+                                </div>
+
+
+                                <div class="feedback-subcategory">
+
+                                    <h5>
+                                        Areas for Improvement
+                                    </h5>
+
+                                    <ul>
+
+                                        <li
+                                            *ngFor="
+                                                let item
+                                                of assessmentResult.aiFeedback
+                                                    .taskPerformance?.areasForImprovement
+                                            ">
+
+                                            {{ item }}
+
+                                        </li>
+
+                                    </ul>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Areas for Improvement -->
+
+                            <div class="feedback-block">
+
+                                <h4>
+                                    Areas for Improvement
+                                </h4>
+
+                                <ul>
+
+                                    <li
+                                        *ngFor="
+                                            let item
+                                            of assessmentResult.aiFeedback
+                                                .areasForImprovement
+                                        ">
+
+                                        {{ item }}
+
+                                    </li>
+
+                                </ul>
+
+                            </div>
+
+
+                            <!-- Recommendations -->
+
+                            <div class="feedback-block">
+
+                                <h4>
+                                    Recommendations
+                                </h4>
+
+                                <ul>
+
+                                    <li
+                                        *ngFor="
+                                            let item
+                                            of assessmentResult.aiFeedback
+                                                .recommendations
+                                        ">
+
+                                        {{ item }}
+
+                                    </li>
+
+                                </ul>
+
+                            </div>
+
+
+                            <!-- CEFR Level Assessment -->
+
+                            <div class="feedback-block">
+
+                                <h4>
+                                    Level Assessment
+                                </h4>
+
+                                <p>
+                                    {{ assessmentResult.aiFeedback.levelAssessment }}
+                                </p>
+
+                            </div>
+
+
+                            <!-- Encouragement -->
+
+                            <div class="feedback-encouragement">
+
+                                <mat-icon>
+                                    emoji_events
+                                </mat-icon>
+
+                                <p>
+                                    {{ assessmentResult.aiFeedback.encouragement }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
                     </div>
 
 

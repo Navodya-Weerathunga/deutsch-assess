@@ -1175,6 +1175,384 @@
   color: #6b7280;
 }
 
+/* =========================================================
+   AI OVERALL FEEDBACK
+   ========================================================= */
+
+.ai-feedback {
+    margin-top: 30px;
+    padding: 28px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+
+/* =========================================================
+   Feedback Header
+   ========================================================= */
+
+.ai-feedback-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.ai-feedback-header mat-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 42px;
+    line-height: 42px;
+    color: #2563eb;
+}
+
+.ai-feedback-header h3 {
+    margin: 0 0 5px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.ai-feedback-header p {
+    margin: 0;
+    font-size: 14px;
+    color: #64748b;
+}
+
+
+/* =========================================================
+   Overall Performance
+   ========================================================= */
+
+.feedback-performance {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    margin: 24px 0;
+    padding: 18px 20px;
+
+    background: #f8fafc;
+    border-radius: 10px;
+    border-left: 4px solid #2563eb;
+}
+
+.feedback-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #475569;
+}
+
+.performance-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 7px 16px;
+
+    border-radius: 20px;
+
+    background: #dcfce7;
+    color: #166534;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   General Feedback Blocks
+   ========================================================= */
+
+.feedback-block {
+    margin-top: 25px;
+}
+
+.feedback-block h4,
+.feedback-category h4 {
+    margin: 0 0 12px;
+
+    font-size: 18px;
+    font-weight: 700;
+
+    color: #1e293b;
+}
+
+.feedback-block p {
+    margin: 0;
+
+    font-size: 15px;
+    line-height: 1.75;
+
+    color: #475569;
+}
+
+
+/* =========================================================
+   Feedback Lists
+   ========================================================= */
+
+.feedback-block ul,
+.feedback-subcategory ul {
+    margin: 0;
+    padding-left: 22px;
+}
+
+.feedback-block li,
+.feedback-subcategory li {
+    margin-bottom: 9px;
+
+    font-size: 15px;
+    line-height: 1.65;
+
+    color: #475569;
+}
+
+.feedback-block li:last-child,
+.feedback-subcategory li:last-child {
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   Feedback Categories
+   ========================================================= */
+
+.feedback-category {
+    margin-top: 28px;
+    padding: 20px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+}
+
+.feedback-category > h4 {
+    padding-bottom: 12px;
+    margin-bottom: 18px;
+
+    border-bottom: 1px solid #e2e8f0;
+}
+
+
+/* =========================================================
+   Feedback Subcategories
+   ========================================================= */
+
+.feedback-subcategory {
+    margin-top: 18px;
+}
+
+.feedback-subcategory:first-of-type {
+    margin-top: 0;
+}
+
+.feedback-subcategory h5 {
+    margin: 0 0 10px;
+
+    font-size: 15px;
+    font-weight: 650;
+
+    color: #334155;
+}
+
+
+/* =========================================================
+   Areas for Improvement
+   ========================================================= */
+
+.feedback-category .feedback-subcategory:nth-child(3) {
+    padding-top: 16px;
+    border-top: 1px solid #e2e8f0;
+}
+
+
+/* =========================================================
+   Recommendations
+   ========================================================= */
+
+.feedback-block:last-of-type {
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   Level Assessment
+   ========================================================= */
+
+.feedback-block p {
+    white-space: normal;
+}
+
+
+/* =========================================================
+   Encouragement
+   ========================================================= */
+
+.feedback-encouragement {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    margin-top: 30px;
+    padding: 20px;
+
+    background: #eff6ff;
+
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+}
+
+.feedback-encouragement mat-icon {
+    flex-shrink: 0;
+
+    margin-top: 2px;
+
+    color: #2563eb;
+}
+
+.feedback-encouragement p {
+    margin: 0;
+
+    font-size: 15px;
+    line-height: 1.7;
+
+    color: #334155;
+}
+
+
+/* =========================================================
+   Responsive - Tablet
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .ai-feedback {
+        margin-top: 24px;
+        padding: 22px;
+    }
+
+    .ai-feedback-header h3 {
+        font-size: 21px;
+    }
+
+    .feedback-performance {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .feedback-category {
+        padding: 17px;
+    }
+
+    .feedback-block h4,
+    .feedback-category h4 {
+        font-size: 17px;
+    }
+
+    .feedback-block p,
+    .feedback-block li,
+    .feedback-subcategory li {
+        font-size: 14px;
+    }
+}
+
+
+/* =========================================================
+   Responsive - Mobile
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .ai-feedback {
+        margin-top: 20px;
+        padding: 16px;
+        border-radius: 10px;
+    }
+
+    .ai-feedback-header {
+        gap: 10px;
+        padding-bottom: 16px;
+    }
+
+    .ai-feedback-header mat-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 34px;
+        line-height: 34px;
+    }
+
+    .ai-feedback-header h3 {
+        font-size: 19px;
+    }
+
+    .ai-feedback-header p {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .feedback-performance {
+        margin: 18px 0;
+        padding: 15px;
+    }
+
+    .feedback-label {
+        font-size: 14px;
+    }
+
+    .performance-badge {
+        padding: 6px 13px;
+        font-size: 13px;
+    }
+
+    .feedback-block {
+        margin-top: 21px;
+    }
+
+    .feedback-block h4,
+    .feedback-category h4 {
+        font-size: 16px;
+    }
+
+    .feedback-block p,
+    .feedback-block li,
+    .feedback-subcategory li {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .feedback-category {
+        margin-top: 20px;
+        padding: 15px;
+    }
+
+    .feedback-subcategory {
+        margin-top: 15px;
+    }
+
+    .feedback-subcategory h5 {
+        font-size: 14px;
+    }
+
+    .feedback-encouragement {
+        margin-top: 22px;
+        padding: 16px;
+        gap: 9px;
+    }
+
+    .feedback-encouragement p {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+}
+
 
 /* =========================================
    RESPONSIVE
