@@ -1,0 +1,439 @@
+<div class="dashboard-container">
+
+    <!-- =====================================
+         Tutor Sidebar
+    ====================================== -->
+
+    <app-tutor-side-bar></app-tutor-side-bar>
+
+
+    <!-- =====================================
+         Main Content
+    ====================================== -->
+
+    <div class="content">
+
+        <div class="page-container">
+
+            <mat-card class="assessment-card">
+
+
+                <!-- =====================================
+                     Header
+                ====================================== -->
+
+                <div class="header">
+
+                    <div>
+
+                        <h2>
+                            My Assessments
+                        </h2>
+
+                        <p>
+                            View assessments generated for your classes
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =====================================
+                     Search
+                ====================================== -->
+
+                <div class="search-box">
+
+                    <mat-form-field
+                        appearance="outline">
+
+                        <mat-label>
+                            Search Assessments
+                        </mat-label>
+
+                        <input
+                            matInput
+                            placeholder="Search by title, topic or level"
+                            [(ngModel)]="searchText"
+                            (input)="searchAssessments()">
+
+                        <mat-icon matSuffix>
+                            search
+                        </mat-icon>
+
+                    </mat-form-field>
+
+                </div>
+
+
+                <!-- =====================================
+                     Loading
+                ====================================== -->
+
+                <div
+                    class="loading-container"
+                    *ngIf="isLoading">
+
+                    <mat-spinner
+                        diameter="45">
+                    </mat-spinner>
+
+                    <p>
+                        Loading assessments...
+                    </p>
+
+                </div>
+
+
+                <!-- =====================================
+                     Error
+                ====================================== -->
+
+                <div
+                    class="error-container"
+                    *ngIf="
+                        !isLoading &&
+                        errorMessage
+                    ">
+
+                    <mat-icon>
+                        error
+                    </mat-icon>
+
+                    <h3>
+                        Unable to Load Assessments
+                    </h3>
+
+                    <p>
+                        {{ errorMessage }}
+                    </p>
+
+                </div>
+
+
+                <!-- =====================================
+                     No Assessments
+                ====================================== -->
+
+                <div
+                    class="empty-container"
+                    *ngIf="
+                        !isLoading &&
+                        !errorMessage &&
+                        filteredAssessments.length === 0
+                    ">
+
+                    <mat-icon>
+                        assignment
+                    </mat-icon>
+
+                    <h3>
+                        No Assessments Found
+                    </h3>
+
+                    <p>
+                        There are currently no assessments
+                        available for your classes.
+                    </p>
+
+                </div>
+
+
+                <!-- =====================================
+                     Assessment Table
+                ====================================== -->
+
+                <div
+                    class="table-responsive"
+                    *ngIf="
+                        !isLoading &&
+                        !errorMessage &&
+                        filteredAssessments.length > 0
+                    ">
+
+                    <table
+                        mat-table
+                        [dataSource]="filteredAssessments"
+                        class="assessment-table mat-elevation-z0">
+
+
+                        <!-- =================================
+                             Assessment Title
+                        ================================== -->
+
+                        <ng-container
+                            matColumnDef="title">
+
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef>
+
+                                Assessment
+
+                            </th>
+
+                            <td
+                                mat-cell
+                                *matCellDef="let assessment">
+
+                                <div class="assessment-title">
+
+                                    <strong>
+                                        {{ assessment.title }}
+                                    </strong>
+
+                                </div>
+
+                            </td>
+
+                        </ng-container>
+
+
+                        <!-- =================================
+                             Level
+                        ================================== -->
+
+                        <ng-container
+                            matColumnDef="level">
+
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef>
+
+                                Level
+
+                            </th>
+
+                            <td
+                                mat-cell
+                                *matCellDef="let assessment">
+
+                                <span
+                                    class="level-badge"
+                                    [ngClass]="
+                                        'level-' +
+                                        assessment.level
+                                            .toLowerCase()
+                                    ">
+
+                                    {{ assessment.level }}
+
+                                </span>
+
+                            </td>
+
+                        </ng-container>
+
+
+                        <!-- =================================
+                             Topic
+                        ================================== -->
+
+                        <ng-container
+                            matColumnDef="topic">
+
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef>
+
+                                Topic
+
+                            </th>
+
+                            <td
+                                mat-cell
+                                *matCellDef="let assessment">
+
+                                <span class="topic-text">
+
+                                    {{ assessment.topic }}
+
+                                </span>
+
+                            </td>
+
+                        </ng-container>
+
+
+                        <!-- =================================
+                             Class Date
+                        ================================== -->
+
+                        <ng-container
+                            matColumnDef="classDate">
+
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef>
+
+                                Class Date
+
+                            </th>
+
+                            <td
+                                mat-cell
+                                *matCellDef="let assessment">
+
+                                <span
+                                    *ngIf="
+                                        assessment.class?.classDate
+                                    ">
+
+                                    {{
+                                        assessment.class.classDate
+                                            | date:'dd/MM/yyyy'
+                                    }}
+
+                                </span>
+
+                                <span
+                                    *ngIf="
+                                        !assessment.class?.classDate
+                                    ">
+
+                                    -
+
+                                </span>
+
+                            </td>
+
+                        </ng-container>
+
+
+                        <!-- =================================
+                             Questions
+                        ================================== -->
+
+                        <ng-container
+                            matColumnDef="questions">
+
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef>
+
+                                Questions
+
+                            </th>
+
+                            <td
+                                mat-cell
+                                *matCellDef="let assessment">
+
+                                <span
+                                    class="question-count">
+
+                                    {{
+                                        assessment.questions?.length || 0
+                                    }}
+
+                                </span>
+
+                            </td>
+
+                        </ng-container>
+
+
+                        <!-- =================================
+                             Total Marks
+                        ================================== -->
+
+                        <ng-container
+                            matColumnDef="totalMarks">
+
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef>
+
+                                Marks
+
+                            </th>
+
+                            <td
+                                mat-cell
+                                *matCellDef="let assessment">
+
+                                <span class="marks">
+
+                                    {{ assessment.totalMarks }}
+
+                                </span>
+
+                            </td>
+
+                        </ng-container>
+
+
+                        <!-- =================================
+                             View
+                        ================================== -->
+
+                        <ng-container
+                            matColumnDef="actions">
+
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef>
+
+                                View
+
+                            </th>
+
+                            <td
+                                mat-cell
+                                *matCellDef="let assessment">
+
+                                <button
+                                    mat-mini-fab
+                                    color="primary"
+                                    matTooltip="View Assessment"
+                                    (click)="viewAssessment(assessment)">
+
+                                    <mat-icon>
+                                        visibility
+                                    </mat-icon>
+
+                                </button>
+
+                            </td>
+
+                        </ng-container>
+
+
+                        <!-- =================================
+                             Header Row
+                        ================================== -->
+
+                        <tr
+                            mat-header-row
+                            *matHeaderRowDef="
+                                displayedColumns
+                            ">
+                        </tr>
+
+
+                        <!-- =================================
+                             Data Rows
+                        ================================== -->
+
+                        <tr
+                            mat-row
+                            *matRowDef="
+                                let row;
+                                columns: displayedColumns;
+                            ">
+                        </tr>
+
+
+                    </table>
+
+                </div>
+
+
+            </mat-card>
+
+        </div>
+
+    </div>
+
+</div>

@@ -404,13 +404,118 @@ router.get(
 
 
 // =====================================================
+// Get Assessment By ID - Tutor
+// =====================================================
+
+router.get(
+    "/tutor/:id",
+    verifyToken,
+    checkRole("TUTOR"),
+    async (req, res) => {
+
+        try {
+
+            const assessment =
+                await Assessment.findById(
+                    req.params.id
+                )
+                .populate({
+                    path: "class",
+                    select:
+                        "topic classDate startTime endTime batch medium level status tutor"
+                });
+
+
+            // -----------------------------------------
+            // Assessment Not Found
+            // -----------------------------------------
+
+            if (!assessment) {
+
+                return res.status(404).json({
+                    msg:
+                        "Assessment not found."
+                });
+
+            }
+
+
+            // -----------------------------------------
+            // Check Class
+            // -----------------------------------------
+
+            if (
+                !assessment.class ||
+                !assessment.class.tutor
+            ) {
+
+                return res.status(403).json({
+
+                    msg:
+                        "You are not authorized to view this assessment."
+
+                });
+
+            }
+
+
+            // -----------------------------------------
+            // Tutor Security Check
+            // -----------------------------------------
+
+            if (
+                assessment.class.tutor.toString() !==
+                req.user.id.toString()
+            ) {
+
+                return res.status(403).json({
+
+                    msg:
+                        "You are not authorized to view this assessment."
+
+                });
+
+            }
+
+
+            // -----------------------------------------
+            // Return Assessment
+            // -----------------------------------------
+
+            return res.status(200).json(
+                assessment
+            );
+
+        }
+
+        catch (err) {
+
+            console.error(
+                "Error loading tutor assessment:",
+                err
+            );
+
+            return res.status(500).json({
+
+                msg:
+                    "Failed to load assessment."
+
+            });
+
+        }
+
+    }
+);
+
+
+// =====================================================
 // Get Assessment By ID
 // =====================================================
 
 router.get(
     "/:id",
     verifyToken,
-    checkRole("ADMIN"),
+    checkRole("ADMIN", "TUTOR"),
     async (req, res) => {
 
         try {

@@ -1,0 +1,613 @@
+/* =====================================
+   Reset
+===================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+/* =====================================
+   Dashboard
+===================================== */
+
+.dashboard-container {
+
+    display: flex;
+
+    min-height: 100vh;
+
+    background: #f5f8fc;
+
+}
+
+
+/* =====================================
+   Main Content
+===================================== */
+
+.content {
+
+    flex: 1;
+
+    margin-left: 260px;
+
+    padding: 30px;
+
+}
+
+
+/* =====================================
+   Page Container
+===================================== */
+
+.page-container {
+
+    padding: 35px;
+
+    background: #f5f8fc;
+
+    min-height: 100vh;
+
+}
+
+
+/* =====================================
+   Assessment Card
+===================================== */
+
+.assessment-card {
+
+    border-radius: 18px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(0, 0, 0, .08);
+
+}
+
+
+/* =====================================
+   Header
+===================================== */
+
+.header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 25px;
+
+}
+
+
+.header h2 {
+
+    color: #0d47a1;
+
+    font-weight: 700;
+
+    margin-bottom: 5px;
+
+}
+
+
+.header p {
+
+    color: #666;
+
+    font-size: 15px;
+
+}
+
+
+/* =====================================
+   Search
+===================================== */
+
+.search-box {
+
+    width: 350px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.search-box mat-form-field {
+
+    width: 100%;
+
+}
+
+
+/* =====================================
+   Table
+===================================== */
+
+.table-responsive {
+
+    width: 100%;
+
+    overflow-x: auto;
+
+}
+
+
+.assessment-table {
+
+    width: 100%;
+
+    background: white;
+
+}
+
+
+/* =====================================
+   Table Header
+===================================== */
+
+th {
+
+    background: #0d47a1 !important;
+
+    color: white;
+
+    font-weight: 600;
+
+    font-size: 15px;
+
+    padding: 15px 10px;
+
+}
+
+
+/* =====================================
+   Table Cells
+===================================== */
+
+td {
+
+    padding: 16px 10px;
+
+    color: #333;
+
+}
+
+
+tr.mat-mdc-row:hover {
+
+    background: #f5f8fc;
+
+}
+
+
+/* =====================================
+   Assessment Title
+===================================== */
+
+.assessment-title {
+
+    max-width: 280px;
+
+}
+
+
+.assessment-title strong {
+
+    color: #0d47a1;
+
+    font-size: 14px;
+
+    line-height: 1.4;
+
+}
+
+
+/* =====================================
+   Topic
+===================================== */
+
+.topic-text {
+
+    display: block;
+
+    max-width: 280px;
+
+    white-space: normal;
+
+    line-height: 1.4;
+
+    color: #555;
+
+}
+
+
+/* =====================================
+   Level Badge
+===================================== */
+
+.level-badge {
+
+    display: inline-block;
+
+    padding: 6px 14px;
+
+    border-radius: 20px;
+
+    color: white;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    text-align: center;
+
+    min-width: 45px;
+
+}
+
+
+/* =====================================
+   A1
+===================================== */
+
+.level-a1 {
+
+    background: #2e7d32;
+
+}
+
+
+/* =====================================
+   A2
+===================================== */
+
+.level-a2 {
+
+    background: #1565c0;
+
+}
+
+
+/* =====================================
+   B1
+===================================== */
+
+.level-b1 {
+
+    background: #ef6c00;
+
+}
+
+
+/* =====================================
+   B2
+===================================== */
+
+.level-b2 {
+
+    background: #6a1b9a;
+
+}
+
+
+/* =====================================
+   C1
+===================================== */
+
+.level-c1 {
+
+    background: #00838f;
+
+}
+
+
+/* =====================================
+   C2
+===================================== */
+
+.level-c2 {
+
+    background: #ad1457;
+
+}
+
+
+/* =====================================
+   Question Count
+===================================== */
+
+.question-count {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 34px;
+
+    height: 34px;
+
+    border-radius: 50%;
+
+    background: #e3f2fd;
+
+    color: #0d47a1;
+
+    font-weight: 600;
+
+}
+
+
+/* =====================================
+   Marks
+===================================== */
+
+.marks {
+
+    font-weight: 700;
+
+    color: #0d47a1;
+
+}
+
+
+/* =====================================
+   View Button
+===================================== */
+
+button {
+
+    margin-right: 6px;
+
+}
+
+
+/* =====================================
+   Loading
+===================================== */
+
+.loading-container {
+
+    min-height: 250px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 15px;
+
+}
+
+
+.loading-container p {
+
+    color: #666;
+
+}
+
+
+/* =====================================
+   Error
+===================================== */
+
+.error-container {
+
+    min-height: 250px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+
+    color: #c62828;
+
+}
+
+
+.error-container mat-icon {
+
+    font-size: 48px;
+
+    width: 48px;
+
+    height: 48px;
+
+    margin-bottom: 12px;
+
+}
+
+
+.error-container h3 {
+
+    color: #c62828;
+
+    margin-bottom: 8px;
+
+}
+
+
+.error-container p {
+
+    color: #777;
+
+}
+
+
+/* =====================================
+   Empty State
+===================================== */
+
+.empty-container {
+
+    min-height: 250px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+
+}
+
+
+.empty-container mat-icon {
+
+    font-size: 55px;
+
+    width: 55px;
+
+    height: 55px;
+
+    color: #90a4ae;
+
+    margin-bottom: 15px;
+
+}
+
+
+.empty-container h3 {
+
+    color: #0d47a1;
+
+    margin-bottom: 8px;
+
+}
+
+
+.empty-container p {
+
+    color: #777;
+
+}
+
+
+/* =====================================
+   Responsive
+===================================== */
+
+@media (max-width: 1100px) {
+
+    .content {
+
+        margin-left: 260px;
+
+    }
+
+
+    .page-container {
+
+        padding: 20px;
+
+    }
+
+
+    .assessment-card {
+
+        padding: 20px;
+
+    }
+
+}
+
+
+/* =====================================
+   Tablet / Mobile
+===================================== */
+
+@media (max-width: 768px) {
+
+    .content {
+
+        margin-left: 75px;
+
+        padding: 15px;
+
+    }
+
+
+    .page-container {
+
+        padding: 15px;
+
+    }
+
+
+    .assessment-card {
+
+        padding: 20px;
+
+    }
+
+
+    .search-box {
+
+        width: 100%;
+
+    }
+
+
+    .header {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 15px;
+
+    }
+
+}
+
+
+/* =====================================
+   Small Screens
+===================================== */
+
+@media (max-width: 480px) {
+
+    .content {
+
+        margin-left: 75px;
+
+        padding: 10px;
+
+    }
+
+
+    .page-container {
+
+        padding: 10px;
+
+    }
+
+
+    .assessment-card {
+
+        padding: 15px;
+
+    }
+
+}

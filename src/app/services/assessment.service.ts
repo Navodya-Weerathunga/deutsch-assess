@@ -53,6 +53,22 @@ export class AssessmentService {
     }
 
     // =====================================
+    // Get Assessments for Logged-in Tutor
+    // =====================================
+
+    getTutorAssessments(): Observable<Assessment[]> {
+
+        return this.http.get<Assessment[]>(
+            `${this.apiUrl}/tutor`,
+            {
+                withCredentials: true
+            }
+        );
+
+    }
+    
+
+    // =====================================
     // Get Assessment By ID
     // =====================================
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,6 +13,7 @@ import {
 } from '../../services/assessment.service';
 
 import { AdminNavbarComponent } from '../admin-nav-bar/admin-nav-bar.component';
+import { TutorSideBarComponent } from '../tutor-side-bar/tutor-side-bar.component';
 
 @Component({
   selector: 'app-assessment-view',
@@ -20,13 +21,13 @@ import { AdminNavbarComponent } from '../admin-nav-bar/admin-nav-bar.component';
   imports: [
     CommonModule,
     RouterModule,
-
     MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
 
-    AdminNavbarComponent
+    AdminNavbarComponent,
+    TutorSideBarComponent
   ],
   templateUrl: './assessment-view.component.html',
   styleUrl: './assessment-view.component.css'
@@ -36,10 +37,12 @@ export class AssessmentViewComponent implements OnInit {
   assessment: Assessment | null = null;
 
   isLoading = false;
+  isTutorView: boolean = false;
 
   constructor(
     private assessmentService: AssessmentService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   // =====================================
@@ -47,6 +50,12 @@ export class AssessmentViewComponent implements OnInit {
   // =====================================
 
   ngOnInit(): void {
+
+    const url =
+      this.router.url;
+
+    this.isTutorView =
+      url.startsWith('/tutor/assessment');
 
     const id = this.route.snapshot.paramMap.get('id');
 

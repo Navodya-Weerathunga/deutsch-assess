@@ -43,11 +43,17 @@ export const routes: Routes = [
     // Tutor list route
     {path: 'tutor-list', loadComponent: () => import('./components/tutor-list/tutor-list.component').then(m => m.TutorListComponent)},
 
-    // Assessment list route
+    // Assessment list route - Admin
     {path: 'assessments', loadComponent: () => import('./components/assessment-list/assessment-list.component').then(m => m.AssessmentListComponent)},
+
+    // Assessment list route - Tutor
+    {path: 'tutor-assessments', loadComponent: () => import('./components/tutor-assessment-list/tutor-assessment-list.component').then(m => m.TutorAssessmentListComponent)},
 
     // Assessment view route
     {path: 'assessment/:id', loadComponent: () => import('./components/assessment-view/assessment-view.component').then(m => m.AssessmentViewComponent)},
+
+    // Assessment view route - Tutor
+    {path: 'tutor/assessment/:id', loadComponent: () => import('./components/assessment-view/assessment-view.component').then(m => m.AssessmentViewComponent)},
 
     // Student dashboard route
     {path: 'student-dashboard', loadComponent: () => import('./components/student-dashboard/student-dashboard.component').then(m => m.StudentDashboardComponent)},

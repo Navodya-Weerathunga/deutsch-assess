@@ -1,7 +1,15 @@
 <div class="dashboard-container">
 
     <!-- Sidebar -->
-    <app-admin-navbar></app-admin-navbar>
+    
+    <!-- Tutor Sidebar -->
+
+    <app-tutor-side-bar *ngIf="isTutorView"></app-tutor-side-bar>
+
+
+    <!-- Admin Sidebar -->
+
+    <app-admin-navbar *ngIf="!isTutorView"></app-admin-navbar>
 
 
     <!-- Main Content -->
