@@ -301,6 +301,108 @@ router.get(
     }
 );
 
+
+// =====================================================
+// Get Assessments for Logged-in Tutor
+// =====================================================
+
+router.get(
+    "/tutor",
+    verifyToken,
+    checkRole("TUTOR"),
+    async (req, res) => {
+
+        try {
+
+            // -----------------------------------------
+            // Find assessments belonging to classes
+            // assigned to the logged-in tutor
+            // -----------------------------------------
+
+            const classes = await Class.find({
+
+                tutor: req.user.id
+
+            }).select("_id");
+
+
+            // -----------------------------------------
+            // No classes assigned
+            // -----------------------------------------
+
+            if (classes.length === 0) {
+
+                return res.status(200).json([]);
+
+            }
+
+
+            // -----------------------------------------
+            // Get class IDs
+            // -----------------------------------------
+
+            const classIds = classes.map(
+                classDoc => classDoc._id
+            );
+
+
+            // -----------------------------------------
+            // Find assessments for those classes
+            // -----------------------------------------
+
+            const assessments =
+                await Assessment.find({
+
+                    class: {
+                        $in: classIds
+                    }
+
+                })
+                .populate({
+
+                    path: "class",
+
+                    select:
+                        "classDate startTime endTime batch medium level topic"
+
+                })
+                .sort({
+                    createdAt: -1
+                });
+
+
+            // -----------------------------------------
+            // Return assessments
+            // -----------------------------------------
+
+            return res.status(200).json(
+                assessments
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "Error loading tutor assessments:",
+                err
+            );
+
+            return res.status(500).json({
+
+                msg:
+                    "Failed to load tutor assessments.",
+
+                error:
+                    err.message
+
+            });
+
+        }
+
+    }
+);
+
+
 // =====================================================
 // Get Assessment By ID
 // =====================================================
