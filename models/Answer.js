@@ -216,6 +216,91 @@ const AnswerSchema = new mongoose.Schema({
         default: ""
     },
 
+    // =====================================
+    // Overall AI Feedback
+    // =====================================
+
+    overallFeedback: {
+
+        performanceLevel: {
+            type: String,
+            default: ""
+        },
+
+        summary: {
+            type: String,
+            default: ""
+        },
+
+        strengths: {
+            type: [String],
+            default: []
+        },
+
+        grammarFeedback: {
+
+            strengths: {
+                type: [String],
+                default: []
+            },
+
+            areasForImprovement: {
+                type: [String],
+                default: []
+            }
+
+        },
+
+        vocabularyFeedback: {
+
+            strengths: {
+                type: [String],
+                default: []
+            },
+
+            areasForImprovement: {
+                type: [String],
+                default: []
+            }
+
+        },
+
+        taskPerformance: {
+
+            strengths: {
+                type: [String],
+                default: []
+            },
+
+            areasForImprovement: {
+                type: [String],
+                default: []
+            }
+
+        },
+
+        areasForImprovement: {
+            type: [String],
+            default: []
+        },
+
+        recommendations: {
+            type: [String],
+            default: []
+        },
+
+        levelAssessment: {
+            type: String,
+            default: ""
+        },
+
+        encouragement: {
+            type: String,
+            default: ""
+        }
+
+    }
+
 });
 
 
