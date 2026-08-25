@@ -371,88 +371,53 @@ router.get("/students", verifyToken, checkRole('ADMIN'), async (req, res) => {
   }
 });
 
-// Get STudents assigned to a specific tutor (Tutor only)
+// Get STudents by Tutor (Tutor only)
 // ======================================================
 // Get Students Assigned to Logged-in Tutor
 // ======================================================
 
 router.get(
-  "/tutor/students",
-  verifyToken,
-  checkRole("TUTOR"),
-  async (req, res) => {
+    "/tutor/students",
+    verifyToken,
+    checkRole("TUTOR"),
+    async (req, res) => {
 
-    try {
+        try {
 
-      // -----------------------------------------
-      // Get logged-in tutor
-      // -----------------------------------------
+            // -----------------------------------------
+            // Find students assigned to this tutor
+            // -----------------------------------------
 
-      const tutor = await User.findById(req.user.id)
-        .select(
-          "_id medium batch assignedCourses"
-        );
+            const students = await User.find({
+
+                role: "STUDENT",
+
+                tutorIncharged: req.user.id
+
+            }).select("-password");
 
 
-      if (!tutor) {
+            // -----------------------------------------
+            // Return students
+            // -----------------------------------------
 
-        return res.status(404).json({
-          msg: "Tutor not found."
-        });
+            return res.status(200).json(students);
 
-      }
+        }
+        catch (err) {
 
-      // -----------------------------------------
-      // Find students matching tutor's
-      // Medium, Batch and Assigned Courses
-      // -----------------------------------------
+            console.error(
+                "Error fetching tutor students:",
+                err
+            );
 
-      const students = await User.find({
+            return res.status(500).json({
+                error: err.message
+            });
 
-        role: "STUDENT",
-
-        medium: {
-          $in: Array.isArray(tutor.medium)
-            ? tutor.medium
-            : [tutor.medium]
-        },
-
-        batch: {
-          $in: Array.isArray(tutor.batch)
-            ? tutor.batch
-            : [tutor.batch]
-        },
-
-        assignedCourses: {
-          $in: Array.isArray(tutor.assignedCourses)
-            ? tutor.assignedCourses
-            : [tutor.assignedCourses]
         }
 
-      }).select("-password");
-
-
-      // -----------------------------------------
-      // Return students
-      // -----------------------------------------
-
-      return res.status(200).json(students);
-
     }
-    catch (err) {
-
-      console.error(
-        "Error fetching tutor students:",
-        err
-      );
-
-      return res.status(500).json({
-        error: err.message
-      });
-
-    }
-
-  }
 );
 
 // Get all tutors (Admin only)
