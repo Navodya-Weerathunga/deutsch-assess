@@ -1,19 +1,24 @@
 // ============================================================
-// overall-feedback.service.js
+// feedback.service.js
 //
 // Generates personalized overall feedback for a student
-// after the complete assessment has been evaluated.
+// after a complete German assessment has been evaluated.
 //
-// This service DOES NOT calculate or modify marks.
-// The existing scoring system remains responsible for scoring.
+// IMPORTANT:
+// This service DOES NOT calculate marks.
+// It only interprets the existing assessment results.
 //
-// The LLM only interprets:
-// - Student's CEFR level
-// - Assessment
-// - Student answers
+// It considers:
+// - CEFR level
+// - Student's actual answers
+// - Assessment questions
 // - Task completion
-// - Language scores
+// - Task completion reasons
+// - XLM-R language scores
 // - Awarded marks
+//
+// The purpose is to provide useful learning feedback
+// for the student.
 // ============================================================
 
 const OpenAI = require("openai");
@@ -23,31 +28,28 @@ const client = new OpenAI({
 });
 
 
-/**
- * Generate overall feedback for a completed assessment.
- *
- * @param {Object} params
- * @param {string} params.level
- * @param {string} params.assessmentTitle
- * @param {number} params.totalMarks
- * @param {number} params.totalMarksAwarded
- * @param {Array} params.questions
- *
- * @returns {Promise<Object>}
- */
+// ============================================================
+// Generate Overall Student Feedback
+// ============================================================
+
 async function generateOverallFeedback({
+
     level,
     assessmentTitle,
     totalMarks,
     totalMarksAwarded,
     questions
+
 }) {
 
     // --------------------------------------------------------
     // Validate input
     // --------------------------------------------------------
 
-    if (!level || typeof level !== "string") {
+    if (
+        !level ||
+        typeof level !== "string"
+    ) {
 
         throw new Error(
             "CEFR level is required."
@@ -56,8 +58,10 @@ async function generateOverallFeedback({
     }
 
 
-    if (!assessmentTitle ||
-        typeof assessmentTitle !== "string") {
+    if (
+        !assessmentTitle ||
+        typeof assessmentTitle !== "string"
+    ) {
 
         throw new Error(
             "Assessment title is required."
@@ -66,8 +70,10 @@ async function generateOverallFeedback({
     }
 
 
-    if (!Array.isArray(questions) ||
-        questions.length === 0) {
+    if (
+        !Array.isArray(questions) ||
+        questions.length === 0
+    ) {
 
         throw new Error(
             "Question results are required."
@@ -77,82 +83,80 @@ async function generateOverallFeedback({
 
 
     // --------------------------------------------------------
-    // Calculate percentage
+    // Calculate official percentage
     //
-    // This is calculated by our application.
-    // The LLM does NOT calculate the official mark.
+    // The application calculates this.
+    // The LLM must NOT recalculate or modify the mark.
     // --------------------------------------------------------
 
     const percentage =
         totalMarks > 0
-            ? (totalMarksAwarded / totalMarks) * 100
+            ? (
+                totalMarksAwarded /
+                totalMarks
+            ) * 100
             : 0;
 
 
     // --------------------------------------------------------
-    // Prepare question information
+    // Prepare question-level information
     // --------------------------------------------------------
 
     const questionData =
-        questions.map((item) => ({
+        questions.map(
+            item => ({
 
-            questionNo:
-                item.questionNo,
+                questionNo:
+                    item.questionNo,
 
-            question:
-                item.question || "",
+                question:
+                    item.question || "",
 
-            answer:
-                item.answer || "",
+                answer:
+                    item.answer || "",
 
-            taskCompletion:
-                item.taskCompletion ?? 0,
+                taskCompletion:
+                    item.taskCompletion ?? 0,
 
-            taskReason:
-                item.taskReason || "",
+                taskReason:
+                    item.taskReason || "",
 
-            xlmScore:
-                item.xlmScore ?? 0,
+                xlmScore:
+                    item.xlmScore ?? 0,
 
-            languageScore:
-                item.languageScore ?? 0,
+                languageScore:
+                    item.languageScore ?? 0,
 
-            maximumMarks:
-                item.maximumMarks ?? 0,
+                maximumMarks:
+                    item.maximumMarks ??
+                    item.allocatedMarks ??
+                    0,
 
-            awardedMarks:
-                item.awardedMarks ?? 0
+                awardedMarks:
+                    item.awardedMarks ?? 0
 
-        }));
+            })
+        );
 
 
-    // --------------------------------------------------------
-    // Prompt
-    // --------------------------------------------------------
+    // ========================================================
+    // LLM PROMPT
+    // ========================================================
 
     const prompt = `
-You are an AI German language learning assistant.
 
-Your task is to generate personalized overall feedback
-for a student after a completed German written assessment.
+You are an experienced German language teacher and
+CEFR-aligned language learning assistant.
 
-The feedback must be appropriate for the student's CEFR level.
+Your task is to review a student's completed German
+written assessment and generate detailed, personalized
+learning feedback.
 
-IMPORTANT:
+The feedback will be shown directly to the student.
 
-- Do NOT recalculate the student's marks.
-- Do NOT change the official score.
-- Do NOT invent assessment results.
-- Do NOT evaluate anything that is not supported by the
-  provided student answers and scores.
-- Consider the student's actual answers when identifying
-  strengths and weaknesses.
-- Consider task completion and language-quality scores.
-- Feedback must be appropriate for the student's CEFR level.
-- Use encouraging and constructive language.
-- Do not be overly harsh.
-- Do not praise the student for something that the data
-  does not support.
+============================================================
+STUDENT AND ASSESSMENT INFORMATION
+============================================================
 
 Student CEFR Level:
 ${level}
@@ -160,70 +164,398 @@ ${level}
 Assessment:
 ${assessmentTitle}
 
-Official Assessment Result:
+Official Score:
 ${totalMarksAwarded} / ${totalMarks}
-Percentage:
+
+Official Percentage:
 ${percentage.toFixed(2)}%
 
-Question-Level Results:
-${JSON.stringify(questionData, null, 2)}
+
+============================================================
+IMPORTANT SCORING RULE
+============================================================
+
+The official score has already been calculated by the
+assessment system.
+
+DO NOT:
+
+- Recalculate the student's marks.
+- Change the student's marks.
+- Suggest a different score.
+- Invent scores.
+- Invent mistakes.
+- Assign a new CEFR level.
+
+Your role is to INTERPRET the provided results and give
+educational feedback.
 
 
-Generate an overall learning feedback report.
+============================================================
+QUESTION-LEVEL DATA
+============================================================
 
-The report must include:
+The following information represents the student's actual
+assessment performance.
 
-1. performanceLevel
-   A short description such as:
-   "Excellent", "Very Good", "Good",
-   "Satisfactory", or "Needs Improvement".
+${JSON.stringify(
+    questionData,
+    null,
+    2
+)}
 
-2. summary
-   A short overall summary of the student's performance.
 
-3. strengths
-   2 to 4 specific strengths supported by the
-   student's answers and scores.
+============================================================
+ANALYSIS REQUIREMENTS
+============================================================
 
-4. areasForImprovement
-   2 to 4 specific areas where the student
-   could improve.
+Review the student's answers question by question.
 
-5. recommendations
-   2 to 4 practical learning recommendations
-   appropriate for the student's CEFR level.
+Consider ALL of the following:
 
-6. levelAssessment
-   Explain briefly whether the student's performance
-   appears appropriate for the given CEFR level.
-   Do not assign a new CEFR level.
+1. Whether the student completed the requested task.
 
-7. encouragement
-   Give a short encouraging message to the student.
+2. Whether the student's answer communicates the required
+   meaning.
 
-Return ONLY valid JSON using exactly this structure:
+3. The task-completion result and reason.
+
+4. The XLM-R language-quality score.
+
+5. The CEFR-normalized language score.
+
+6. The marks awarded for each question.
+
+7. The student's actual German language production.
+
+8. Recurring patterns across multiple answers.
+
+Do not judge the student from the total percentage alone.
+
+
+============================================================
+GRAMMAR ANALYSIS
+============================================================
+
+Analyze the student's ACTUAL German answers for grammar.
+
+Look for evidence of:
+
+- Sentence structure
+- Word order
+- Verb usage
+- Verb conjugation
+- Articles
+- Noun forms
+- Pronouns
+- Prepositions
+- Agreement
+- Basic grammatical patterns appropriate to the
+  student's CEFR level
+
+Only mention a grammatical weakness when there is
+evidence in the student's answers.
+
+Do NOT invent grammar mistakes.
+
+If the student's grammar is appropriate for the level,
+say so.
+
+Grammar feedback must be appropriate to the student's
+CEFR level.
+
+
+============================================================
+VOCABULARY ANALYSIS
+============================================================
+
+Analyze the student's ACTUAL vocabulary usage.
+
+Consider:
+
+- Appropriate word choice
+- Vocabulary range
+- Use of lesson-related vocabulary
+- Repetition
+- Incorrect word choices
+- Missing vocabulary
+- Ability to express the required meaning
+
+Only mention vocabulary weaknesses supported by the
+student's answers.
+
+Do NOT invent vocabulary problems.
+
+Vocabulary expectations must match the student's
+CEFR level.
+
+
+============================================================
+TASK PERFORMANCE ANALYSIS
+============================================================
+
+Analyze whether the student successfully completed the
+requested tasks.
+
+Use:
+
+- taskCompletion
+- taskReason
+- awardedMarks
+- actual answer
+
+Identify:
+
+- Tasks completed successfully
+- Tasks partially completed
+- Information that was missing
+- Questions where the student performed particularly well
+
+
+============================================================
+CEFR LEVEL REQUIREMENT
+============================================================
+
+The feedback MUST be appropriate for the student's
+current CEFR level.
+
+The CEFR level determines the expected complexity of
+language.
+
+For A1 students, focus on:
+
+- Basic vocabulary
+- Simple sentence structures
+- Basic grammar
+- Basic personal information
+- Simple everyday communication
+- Short understandable written responses
+
+For A2 students, focus more on:
+
+- Connected sentences
+- Everyday descriptions
+- Basic explanations
+- Grammar application
+- More developed everyday communication
+
+For B1 students, focus more on:
+
+- Connected writing
+- Grammar accuracy in context
+- Explanation of ideas
+- Vocabulary range
+- Coherent written communication
+
+For B2 students, focus more on:
+
+- Complex sentence structures
+- Detailed explanations
+- Coherent writing
+- More precise vocabulary
+- Grammatical accuracy
+- Independent language production
+
+Do not judge an A1 student using B1/B2 expectations.
+
+Do not praise an A1 student for using advanced language
+simply because it is advanced.
+
+Do not introduce language requirements that are
+unreasonable for the student's CEFR level.
+
+
+============================================================
+OVERALL PERFORMANCE
+============================================================
+
+Determine a descriptive performance level based on the
+provided results.
+
+Use one of:
+
+- Excellent
+- Very Good
+- Good
+- Satisfactory
+- Needs Improvement
+
+The description must be consistent with the student's
+actual performance.
+
+Do not use the performance level as a replacement for
+the official numerical score.
+
+
+============================================================
+STRENGTHS
+============================================================
+
+Identify 2 to 5 specific strengths.
+
+Strengths should be based on:
+
+- Actual answers
+- Task completion
+- Language quality
+- Marks
+- Appropriate CEFR-level performance
+
+Avoid generic statements such as:
+
+"You did well."
+
+Instead explain WHAT the student did well.
+
+
+============================================================
+AREAS FOR IMPROVEMENT
+============================================================
+
+Identify the most important areas that the student should
+work on.
+
+Prioritize recurring or meaningful weaknesses.
+
+Do not list every small possible mistake.
+
+Focus on improvements that would provide the greatest
+learning benefit.
+
+
+============================================================
+PERSONALIZED RECOMMENDATIONS
+============================================================
+
+Provide practical recommendations that the student can
+actually follow.
+
+Recommendations may include:
+
+- Grammar practice
+- Vocabulary practice
+- Sentence-writing practice
+- Topic-specific practice
+- German writing exercises
+- Review of common sentence patterns
+- Practice with everyday communication
+
+Recommendations must be appropriate for the student's
+CEFR level.
+
+
+============================================================
+LEVEL ASSESSMENT
+============================================================
+
+Explain whether the student's performance is generally
+consistent with the expected performance for their
+current CEFR level.
+
+IMPORTANT:
+
+Do NOT assign a new CEFR level.
+
+Do NOT say:
+
+"You are A2."
+
+when the student is currently being assessed at A1.
+
+Instead say things such as:
+
+"Your performance is generally appropriate for A1,
+with further practice needed in sentence accuracy."
+
+The purpose is to explain how the student is progressing
+within their current level.
+
+
+============================================================
+ENCOURAGEMENT
+============================================================
+
+End with a short, sincere and motivating message.
+
+The message should:
+
+- Recognize the student's effort.
+- Encourage continued German learning.
+- Be appropriate for the student's performance.
+- Avoid exaggerated praise.
+
+
+============================================================
+OUTPUT FORMAT
+============================================================
+
+Return ONLY valid JSON.
+
+Use EXACTLY this structure:
 
 {
-  "performanceLevel": "string",
-  "summary": "string",
-  "strengths": [
-    "string"
-  ],
-  "areasForImprovement": [
-    "string"
-  ],
-  "recommendations": [
-    "string"
-  ],
-  "levelAssessment": "string",
-  "encouragement": "string"
+    "performanceLevel": "",
+
+    "summary": "",
+
+    "strengths": [
+        ""
+    ],
+
+    "grammarFeedback": {
+        "strengths": [
+            ""
+        ],
+        "areasForImprovement": [
+            ""
+        ]
+    },
+
+    "vocabularyFeedback": {
+        "strengths": [
+            ""
+        ],
+        "areasForImprovement": [
+            ""
+        ]
+    },
+
+    "taskPerformance": {
+        "strengths": [
+            ""
+        ],
+        "areasForImprovement": [
+            ""
+        ]
+    },
+
+    "areasForImprovement": [
+        ""
+    ],
+
+    "recommendations": [
+        ""
+    ],
+
+    "levelAssessment": "",
+
+    "encouragement": ""
 }
+
+Return ONLY the JSON object.
+
+Do not return:
+
+- Markdown
+- Code fences
+- Explanations outside the JSON
+- Additional fields
 `;
 
 
-    // --------------------------------------------------------
-    // Call OpenAI
-    // --------------------------------------------------------
+    // ========================================================
+    // CALL OPENAI
+    // ========================================================
 
     const response =
         await client.responses.create({
@@ -237,9 +569,9 @@ Return ONLY valid JSON using exactly this structure:
         });
 
 
-    // --------------------------------------------------------
-    // Get response text
-    // --------------------------------------------------------
+    // ========================================================
+    // READ RESPONSE
+    // ========================================================
 
     const outputText =
         response.output_text?.trim();
@@ -248,18 +580,17 @@ Return ONLY valid JSON using exactly this structure:
     if (!outputText) {
 
         throw new Error(
-            "OpenAI returned an empty overall feedback response."
+            "OpenAI returned an empty feedback response."
         );
 
     }
 
 
-    // --------------------------------------------------------
-    // Parse JSON
-    // --------------------------------------------------------
+    // ========================================================
+    // PARSE JSON
+    // ========================================================
 
     let feedback;
-
 
     try {
 
@@ -270,20 +601,23 @@ Return ONLY valid JSON using exactly this structure:
     catch (error) {
 
         console.error(
-            "Failed to parse overall feedback:",
+            "Failed to parse feedback response:"
+        );
+
+        console.error(
             outputText
         );
 
         throw new Error(
-            "OpenAI returned invalid JSON for overall feedback."
+            "OpenAI returned invalid JSON for student feedback."
         );
 
     }
 
 
-    // --------------------------------------------------------
-    // Validate response
-    // --------------------------------------------------------
+    // ========================================================
+    // VALIDATE RESPONSE
+    // ========================================================
 
     if (
         typeof feedback.performanceLevel !==
@@ -291,7 +625,7 @@ Return ONLY valid JSON using exactly this structure:
     ) {
 
         throw new Error(
-            "Invalid performanceLevel returned by OpenAI."
+            "Invalid performanceLevel in feedback."
         );
 
     }
@@ -303,18 +637,71 @@ Return ONLY valid JSON using exactly this structure:
     ) {
 
         throw new Error(
-            "Invalid summary returned by OpenAI."
+            "Invalid summary in feedback."
         );
 
     }
 
 
     if (
-        !Array.isArray(feedback.strengths)
+        !Array.isArray(
+            feedback.strengths
+        )
     ) {
 
         throw new Error(
-            "Invalid strengths returned by OpenAI."
+            "Invalid strengths in feedback."
+        );
+
+    }
+
+
+    if (
+        !feedback.grammarFeedback ||
+        !Array.isArray(
+            feedback.grammarFeedback.strengths
+        ) ||
+        !Array.isArray(
+            feedback.grammarFeedback.areasForImprovement
+        )
+    ) {
+
+        throw new Error(
+            "Invalid grammar feedback."
+        );
+
+    }
+
+
+    if (
+        !feedback.vocabularyFeedback ||
+        !Array.isArray(
+            feedback.vocabularyFeedback.strengths
+        ) ||
+        !Array.isArray(
+            feedback.vocabularyFeedback.areasForImprovement
+        )
+    ) {
+
+        throw new Error(
+            "Invalid vocabulary feedback."
+        );
+
+    }
+
+
+    if (
+        !feedback.taskPerformance ||
+        !Array.isArray(
+            feedback.taskPerformance.strengths
+        ) ||
+        !Array.isArray(
+            feedback.taskPerformance.areasForImprovement
+        )
+    ) {
+
+        throw new Error(
+            "Invalid task performance feedback."
         );
 
     }
@@ -327,7 +714,7 @@ Return ONLY valid JSON using exactly this structure:
     ) {
 
         throw new Error(
-            "Invalid areasForImprovement returned by OpenAI."
+            "Invalid areasForImprovement in feedback."
         );
 
     }
@@ -340,7 +727,7 @@ Return ONLY valid JSON using exactly this structure:
     ) {
 
         throw new Error(
-            "Invalid recommendations returned by OpenAI."
+            "Invalid recommendations in feedback."
         );
 
     }
@@ -352,7 +739,7 @@ Return ONLY valid JSON using exactly this structure:
     ) {
 
         throw new Error(
-            "Invalid levelAssessment returned by OpenAI."
+            "Invalid levelAssessment in feedback."
         );
 
     }
@@ -364,15 +751,15 @@ Return ONLY valid JSON using exactly this structure:
     ) {
 
         throw new Error(
-            "Invalid encouragement returned by OpenAI."
+            "Invalid encouragement in feedback."
         );
 
     }
 
 
-    // --------------------------------------------------------
-    // Return structured feedback
-    // --------------------------------------------------------
+    // ========================================================
+    // RETURN CLEAN FEEDBACK
+    // ========================================================
 
     return {
 
@@ -384,15 +771,78 @@ Return ONLY valid JSON using exactly this structure:
 
         strengths:
             feedback.strengths
-                .map(item => String(item).trim()),
+                .map(
+                    item =>
+                        String(item).trim()
+                ),
+
+        grammarFeedback: {
+
+            strengths:
+                feedback.grammarFeedback.strengths
+                    .map(
+                        item =>
+                            String(item).trim()
+                    ),
+
+            areasForImprovement:
+                feedback.grammarFeedback.areasForImprovement
+                    .map(
+                        item =>
+                            String(item).trim()
+                    )
+
+        },
+
+        vocabularyFeedback: {
+
+            strengths:
+                feedback.vocabularyFeedback.strengths
+                    .map(
+                        item =>
+                            String(item).trim()
+                    ),
+
+            areasForImprovement:
+                feedback.vocabularyFeedback.areasForImprovement
+                    .map(
+                        item =>
+                            String(item).trim()
+                    )
+
+        },
+
+        taskPerformance: {
+
+            strengths:
+                feedback.taskPerformance.strengths
+                    .map(
+                        item =>
+                            String(item).trim()
+                    ),
+
+            areasForImprovement:
+                feedback.taskPerformance.areasForImprovement
+                    .map(
+                        item =>
+                            String(item).trim()
+                    )
+
+        },
 
         areasForImprovement:
             feedback.areasForImprovement
-                .map(item => String(item).trim()),
+                .map(
+                    item =>
+                        String(item).trim()
+                ),
 
         recommendations:
             feedback.recommendations
-                .map(item => String(item).trim()),
+                .map(
+                    item =>
+                        String(item).trim()
+                ),
 
         levelAssessment:
             feedback.levelAssessment.trim(),
@@ -404,6 +854,10 @@ Return ONLY valid JSON using exactly this structure:
 
 }
 
+
+// ============================================================
+// EXPORT
+// ============================================================
 
 module.exports = {
     generateOverallFeedback
