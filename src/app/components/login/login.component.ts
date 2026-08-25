@@ -69,7 +69,7 @@ export class LoginComponent {
             break;
 
           case 'TUTOR':
-            this.router.navigate(['/tutor-navbar']);
+            this.router.navigate(['/tutor-student-list']);
             break;
 
           case 'STUDENT':

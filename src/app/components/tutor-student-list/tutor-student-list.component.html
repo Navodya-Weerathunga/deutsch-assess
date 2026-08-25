@@ -1,0 +1,228 @@
+<div class="tutor-students-page">
+
+    <!-- Tutor Sidebar -->
+
+    <app-tutor-side-bar></app-tutor-side-bar>
+
+
+    <!-- =====================================
+         Main Content
+    ====================================== -->
+
+    <div class="page-content">
+
+
+        <!-- =====================================
+             Page Header
+        ====================================== -->
+
+        <div class="page-header">
+
+            <div>
+
+                <h1>
+                    My Students
+                </h1>
+
+                <p>
+                    View the students assigned to you.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             Loading
+        ====================================== -->
+
+        <div
+            class="loading-container"
+            *ngIf="isLoading">
+
+            <mat-spinner
+                diameter="40">
+            </mat-spinner>
+
+            <p>
+                Loading students...
+            </p>
+
+        </div>
+
+
+        <!-- =====================================
+             Error
+        ====================================== -->
+
+        <div
+            class="error-message"
+            *ngIf="
+                !isLoading &&
+                errorMessage
+            ">
+
+            <mat-icon>
+                error
+            </mat-icon>
+
+            <span>
+                {{ errorMessage }}
+            </span>
+
+        </div>
+
+
+        <!-- =====================================
+             Empty State
+        ====================================== -->
+
+        <div
+            class="empty-state"
+            *ngIf="
+                !isLoading &&
+                !errorMessage &&
+                students.length === 0
+            ">
+
+            <mat-icon>
+                groups
+            </mat-icon>
+
+            <h2>
+                No Students Assigned
+            </h2>
+
+            <p>
+                Students assigned to you will
+                appear here.
+            </p>
+
+        </div>
+
+
+        <!-- =====================================
+             Student Table
+        ====================================== -->
+
+        <div
+            class="students-card"
+            *ngIf="
+                !isLoading &&
+                !errorMessage &&
+                students.length > 0
+            ">
+
+
+            <!-- Table Header -->
+
+            <div class="table-header">
+
+                <div>
+                    Student
+                </div>
+
+                <div>
+                    Student ID
+                </div>
+
+                <div>
+                    Assigned Courses
+                </div>
+
+                <div>
+                    Medium
+                </div>
+
+                <div>
+                    Status
+                </div>
+
+            </div>
+
+
+            <!-- Student Rows -->
+
+            <div
+                class="student-row"
+                *ngFor="
+                    let student of students
+                ">
+
+
+                <!-- Student -->
+
+                <div class="student-info">
+
+                    <div class="student-avatar">
+
+                        <mat-icon>
+                            person
+                        </mat-icon>
+
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            {{ getStudentName(student) }}
+                        </h3>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Student ID -->
+
+                <div class="student-id">
+
+                    {{ student.regNo }}
+
+                </div>
+
+
+                <!-- Assigned Courses -->
+
+                <div class="courses">
+
+                    {{ getAssignedCourses(student) }}
+
+                </div>
+
+
+                <!-- Medium -->
+
+                <div class="medium">
+
+                    {{ student.medium || 'N/A' }}
+
+                </div>
+
+
+                <!-- Status -->
+
+                <div class="status">
+
+                    <span
+                        class="status-badge"
+                        [class.active]="student.status === 'ACTIVE'"
+                        [class.inactive]="student.status !== 'ACTIVE'">
+
+                        {{
+                            student.status || 'N/A'
+                        }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>

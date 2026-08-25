@@ -377,7 +377,7 @@ router.get("/students", verifyToken, checkRole('ADMIN'), async (req, res) => {
 // ======================================================
 
 router.get(
-    "/tutor/students",
+    "/assigned-students",
     verifyToken,
     checkRole("TUTOR"),
     async (req, res) => {

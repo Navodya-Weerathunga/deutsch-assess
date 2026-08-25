@@ -1,0 +1,659 @@
+/* =====================================
+   Page
+===================================== */
+
+.tutor-students-page {
+
+    min-height: 100vh;
+
+    background: #f5f7fb;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+}
+
+
+/* =====================================
+   Main Content
+===================================== */
+
+.page-content {
+
+    margin-left: 260px;
+
+    padding: 40px;
+
+    min-height: 100vh;
+
+}
+
+
+/* =====================================
+   Page Header
+===================================== */
+
+.page-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 30px;
+
+}
+
+
+.page-header h1 {
+
+    margin: 0;
+
+    color: #0d47a1;
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+}
+
+
+.page-header p {
+
+    margin-top: 8px;
+
+    color: #666;
+
+    font-size: 16px;
+
+}
+
+
+/* =====================================
+   Loading
+===================================== */
+
+.loading-container {
+
+    min-height: 300px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 15px;
+
+    color: #666;
+
+}
+
+
+.loading-container p {
+
+    margin: 0;
+
+}
+
+
+/* =====================================
+   Error
+===================================== */
+
+.error-message {
+
+    background: #ffebee;
+
+    color: #c62828;
+
+    border-left: 5px solid #c62828;
+
+    padding: 18px 20px;
+
+    border-radius: 8px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 25px;
+
+}
+
+
+/* =====================================
+   Empty State
+===================================== */
+
+.empty-state {
+
+    background: #ffffff;
+
+    border-radius: 12px;
+
+    padding: 60px 30px;
+
+    text-align: center;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.06);
+
+}
+
+
+.empty-state mat-icon {
+
+    font-size: 55px;
+
+    width: 55px;
+
+    height: 55px;
+
+    color: #90caf9;
+
+    margin-bottom: 15px;
+
+}
+
+
+.empty-state h2 {
+
+    margin: 0 0 10px;
+
+    color: #333;
+
+    font-size: 22px;
+
+}
+
+
+.empty-state p {
+
+    margin: 0;
+
+    color: #777;
+
+    font-size: 15px;
+
+}
+
+
+/* =====================================
+   Students Card
+===================================== */
+
+.students-card {
+
+    background: #ffffff;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 4px 18px rgba(0, 0, 0, 0.07);
+
+    overflow: hidden;
+
+}
+
+
+/* =====================================
+   Table Header
+===================================== */
+
+.table-header {
+
+    display: grid;
+
+    grid-template-columns:
+        1.5fr
+        1fr
+        1.8fr
+        1fr
+        .9fr;
+
+    align-items: center;
+
+    padding: 18px 25px;
+
+    background: #0d47a1;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+
+/* =====================================
+   Student Row
+===================================== */
+
+.student-row {
+
+    display: grid;
+
+    grid-template-columns:
+        1.5fr
+        1fr
+        1.8fr
+        1fr
+        .9fr;
+
+    align-items: center;
+
+    padding: 20px 25px;
+
+    border-bottom:
+        1px solid #eeeeee;
+
+    transition:
+        background .2s ease;
+
+}
+
+
+.student-row:last-child {
+
+    border-bottom: none;
+
+}
+
+
+.student-row:hover {
+
+    background: #f8fbff;
+
+}
+
+
+/* =====================================
+   Student Information
+===================================== */
+
+.student-info {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+}
+
+
+.student-avatar {
+
+    width: 44px;
+
+    height: 44px;
+
+    border-radius: 50%;
+
+    background: #e3f2fd;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-shrink: 0;
+
+}
+
+
+.student-avatar mat-icon {
+
+    color: #1565c0;
+
+    font-size: 24px;
+
+    width: 24px;
+
+    height: 24px;
+
+}
+
+
+.student-info h3 {
+
+    margin: 0;
+
+    color: #333;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+}
+
+
+/* =====================================
+   Student ID
+===================================== */
+
+.student-id {
+
+    color: #555;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+}
+
+
+/* =====================================
+   Courses
+===================================== */
+
+.courses {
+
+    color: #555;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+
+    padding-right: 15px;
+
+}
+
+
+/* =====================================
+   Medium
+===================================== */
+
+.medium {
+
+    color: #555;
+
+    font-size: 14px;
+
+}
+
+
+/* =====================================
+   Status
+===================================== */
+
+.status-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 6px 13px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    text-transform: capitalize;
+
+}
+
+
+/* Active */
+
+.status-badge.active {
+
+    background: #e8f5e9;
+
+    color: #2e7d32;
+
+}
+
+
+/* Inactive */
+
+.status-badge.inactive {
+
+    background: #ffebee;
+
+    color: #c62828;
+
+}
+
+
+/* =====================================
+   Tablet
+===================================== */
+
+@media (max-width: 1100px) {
+
+    .page-content {
+
+        padding: 30px;
+
+    }
+
+
+    .table-header,
+    .student-row {
+
+        grid-template-columns:
+            1.4fr
+            .9fr
+            1.5fr
+            .9fr
+            .8fr;
+
+        padding-left: 20px;
+
+        padding-right: 20px;
+
+    }
+
+}
+
+
+/* =====================================
+   Mobile / Collapsed Sidebar
+===================================== */
+
+@media (max-width: 768px) {
+
+    .page-content {
+
+        margin-left: 75px;
+
+        padding: 25px 20px;
+
+    }
+
+
+    .page-header h1 {
+
+        font-size: 25px;
+
+    }
+
+
+    .page-header p {
+
+        font-size: 14px;
+
+    }
+
+
+    /*
+       Turn the table into cards
+    */
+
+    .students-card {
+
+        background: transparent;
+
+        box-shadow: none;
+
+        overflow: visible;
+
+    }
+
+
+    .table-header {
+
+        display: none;
+
+    }
+
+
+    .student-row {
+
+        display: block;
+
+        background: #ffffff;
+
+        border-radius: 12px;
+
+        padding: 20px;
+
+        margin-bottom: 15px;
+
+        box-shadow:
+            0 4px 14px rgba(0, 0, 0, 0.06);
+
+    }
+
+
+    .student-info {
+
+        margin-bottom: 18px;
+
+    }
+
+
+    .student-id,
+    .courses,
+    .medium,
+    .status {
+
+        padding: 10px 0;
+
+        border-top:
+            1px solid #eeeeee;
+
+    }
+
+
+    .student-id::before {
+
+        content: "Student ID";
+
+        display: block;
+
+        font-size: 12px;
+
+        color: #888;
+
+        margin-bottom: 4px;
+
+        font-weight: 600;
+
+    }
+
+
+    .courses::before {
+
+        content: "Assigned Courses";
+
+        display: block;
+
+        font-size: 12px;
+
+        color: #888;
+
+        margin-bottom: 4px;
+
+        font-weight: 600;
+
+    }
+
+
+    .medium::before {
+
+        content: "Medium";
+
+        display: block;
+
+        font-size: 12px;
+
+        color: #888;
+
+        margin-bottom: 4px;
+
+        font-weight: 600;
+
+    }
+
+
+    .status::before {
+
+        content: "Status";
+
+        display: block;
+
+        font-size: 12px;
+
+        color: #888;
+
+        margin-bottom: 6px;
+
+        font-weight: 600;
+
+    }
+
+}
+
+
+/* =====================================
+   Small Mobile
+===================================== */
+
+@media (max-width: 480px) {
+
+    .page-content {
+
+        margin-left: 75px;
+
+        padding: 20px 15px;
+
+    }
+
+
+    .page-header h1 {
+
+        font-size: 22px;
+
+    }
+
+
+    .page-header p {
+
+        font-size: 13px;
+
+    }
+
+
+    .student-row {
+
+        padding: 16px;
+
+    }
+
+}

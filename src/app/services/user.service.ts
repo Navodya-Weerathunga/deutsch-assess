@@ -127,6 +127,16 @@ export class UserService {
     }
 
     // ==========================
+    // Get All Students for a Tutor
+    // ==========================
+
+    getTutorStudents(): Observable<User[]> {
+
+      return this.http.get<User[]>(`${this.apiUrl}/assigned-students`, { withCredentials: true });
+
+    }
+
+    // ==========================
     // User State
     // ==========================
 

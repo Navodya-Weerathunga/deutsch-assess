@@ -22,8 +22,11 @@ export const routes: Routes = [
     // Tutor navbar route
     {path: 'tutor-navbar', loadComponent: () => import('./components/tutor-side-bar/tutor-side-bar.component').then(m => m.TutorSideBarComponent)},
 
-    // Student list route
+    // Student list route - Admin view
     {path: 'student-list', loadComponent: () => import('./components/student-list/student-list.component').then(m => m.StudentListComponent)},
+
+    // Student list route - Tutor view
+    {path: 'tutor-student-list', loadComponent: () => import('./components/tutor-student-list/tutor-student-list.component').then(m => m.TutorStudentListComponent)},
 
     // Signup route
     {path: 'signup', loadComponent: () => import('./components/sign-up/sign-up.component').then(m => m.SignupComponent)},
