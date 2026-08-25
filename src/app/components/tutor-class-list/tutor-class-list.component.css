@@ -1,0 +1,557 @@
+/* =====================================================
+   Layout
+===================================================== */
+
+.page-container {
+
+    display: flex;
+
+    min-height: 100vh;
+
+    background: #f4f7fb;
+
+}
+
+
+.content {
+
+    flex: 1;
+
+    margin-left: 270px;
+
+    padding: 30px;
+
+    transition:
+        all 0.3s ease;
+
+}
+
+
+/* =====================================================
+   Card
+===================================================== */
+
+.table-card {
+
+    width: 100%;
+
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    box-shadow:
+        0 10px 30px
+        rgba(0, 0, 0, 0.08);
+
+}
+
+
+/* =====================================================
+   Header
+===================================================== */
+
+.page-header {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    align-items: center;
+
+    padding: 20px 25px;
+
+    flex-wrap: wrap;
+
+    gap: 15px;
+
+}
+
+
+.title {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+
+.title mat-icon {
+
+    color: #1565c0;
+
+    font-size: 32px;
+
+    width: 32px;
+
+    height: 32px;
+
+}
+
+
+.title span {
+
+    font-size: 26px;
+
+    font-weight: 600;
+
+    color: #1f2937;
+
+}
+
+
+/* =====================================================
+   Table
+===================================================== */
+
+.table-container {
+
+    padding: 20px;
+
+    overflow-x: auto;
+
+}
+
+
+.full-width-table {
+
+    width: 100%;
+
+    border-collapse:
+        collapse;
+
+}
+
+
+/* =====================================================
+   Table Header
+===================================================== */
+
+.mat-mdc-header-row {
+
+    background: #1565c0;
+
+}
+
+
+.mat-mdc-header-cell {
+
+    color: white !important;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    padding: 18px 15px;
+
+    white-space: nowrap;
+
+}
+
+
+/* =====================================================
+   Table Body
+===================================================== */
+
+.mat-mdc-row {
+
+    transition:
+        all .25s ease;
+
+}
+
+
+.mat-mdc-row:hover {
+
+    background: #f3f8ff;
+
+}
+
+
+.mat-mdc-cell {
+
+    padding: 15px;
+
+    color: #444;
+
+    font-size: 14px;
+
+    white-space: nowrap;
+
+}
+
+
+/* =====================================================
+   Level Badge
+===================================================== */
+
+.level-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 42px;
+
+    padding: 5px 10px;
+
+    border-radius: 15px;
+
+    background: #e3f2fd;
+
+    color: #1565c0;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+
+/* =====================================================
+   Status Badge
+===================================================== */
+
+.status-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 6px 12px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+
+/* Completed */
+
+.status-badge.completed {
+
+    background: #e8f5e9;
+
+    color: #2e7d32;
+
+}
+
+
+/* Ongoing */
+
+.status-badge.ongoing {
+
+    background: #fff3e0;
+
+    color: #ef6c00;
+
+}
+
+
+/* Upcoming */
+
+.status-badge.upcoming {
+
+    background: #e3f2fd;
+
+    color: #1565c0;
+
+}
+
+
+/* =====================================================
+   Meeting Link
+===================================================== */
+
+a {
+
+    color: #1565c0;
+
+    text-decoration: none;
+
+    font-weight: 500;
+
+}
+
+
+a:hover {
+
+    text-decoration: underline;
+
+}
+
+
+/* =====================================================
+   Loading
+===================================================== */
+
+.loading-container {
+
+    min-height: 300px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    color: #666;
+
+}
+
+
+.loading-container mat-icon {
+
+    color: #1565c0;
+
+    font-size: 32px;
+
+    width: 32px;
+
+    height: 32px;
+
+}
+
+
+.loading-container p {
+
+    margin: 0;
+
+    font-size: 14px;
+
+}
+
+
+/* =====================================================
+   Error
+===================================================== */
+
+.error-container {
+
+    min-height: 250px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    color: #c62828;
+
+}
+
+
+.error-container mat-icon {
+
+    font-size: 40px;
+
+    width: 40px;
+
+    height: 40px;
+
+}
+
+
+.error-container p {
+
+    margin: 0;
+
+}
+
+
+/* =====================================================
+   Empty State
+===================================================== */
+
+.empty-container {
+
+    min-height: 300px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    color: #666;
+
+}
+
+
+.empty-container mat-icon {
+
+    color: #90caf9;
+
+    font-size: 50px;
+
+    width: 50px;
+
+    height: 50px;
+
+    margin-bottom: 12px;
+
+}
+
+
+.empty-container h3 {
+
+    margin: 0 0 8px;
+
+    color: #333;
+
+    font-size: 20px;
+
+}
+
+
+.empty-container p {
+
+    margin: 0;
+
+    font-size: 14px;
+
+}
+
+
+/* =====================================================
+   Responsive
+===================================================== */
+
+@media (max-width: 1200px) {
+
+    .content {
+
+        margin-left: 250px;
+
+        padding: 20px;
+
+    }
+
+}
+
+
+/* =====================================================
+   Tablet
+===================================================== */
+
+@media (max-width: 992px) {
+
+    .content {
+
+        margin-left: 75px;
+
+        padding: 20px;
+
+    }
+
+
+    .page-header {
+
+        padding: 18px 20px;
+
+    }
+
+
+    .title span {
+
+        font-size: 23px;
+
+    }
+
+
+    .table-container {
+
+        padding: 15px;
+
+    }
+
+}
+
+
+/* =====================================================
+   Small Screen
+===================================================== */
+
+@media (max-width: 768px) {
+
+    .content {
+
+        margin-left: 75px;
+
+        padding: 15px;
+
+    }
+
+
+    .table-card {
+
+        border-radius: 14px;
+
+    }
+
+
+    .page-header {
+
+        padding: 18px;
+
+    }
+
+
+    .title span {
+
+        font-size: 21px;
+
+    }
+
+
+    .title mat-icon {
+
+        font-size: 28px;
+
+        width: 28px;
+
+        height: 28px;
+
+    }
+
+
+    .mat-mdc-header-cell {
+
+        padding: 14px 12px;
+
+        font-size: 13px;
+
+    }
+
+
+    .mat-mdc-cell {
+
+        padding: 13px 12px;
+
+        font-size: 13px;
+
+    }
+
+}

@@ -34,8 +34,11 @@ export const routes: Routes = [
     // Create class route
     {path: 'create-class', loadComponent: () => import('./components/class/class.component').then(m => m.CreateClassComponent)},
 
-    // Class list route
+    // Class list route - Admin
     {path: 'classes', loadComponent: () => import('./components/class-list/class-list.component').then(m => m.ClassListComponent)},
+
+    // Class list route - Tutor
+    {path: 'tutor-classes', loadComponent: () => import('./components/tutor-class-list/tutor-class-list.component').then(m => m.TutorClassListComponent)},
 
     // Tutor list route
     {path: 'tutor-list', loadComponent: () => import('./components/tutor-list/tutor-list.component').then(m => m.TutorListComponent)},

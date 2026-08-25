@@ -85,6 +85,21 @@ export class ClassService {
   }
 
   // =====================================
+  // Get Classes Assigned to Logged-in Tutor
+  // =====================================
+
+  getTutorClasses(): Observable<Class[]> {
+
+    return this.http.get<Class[]>(
+      `${this.apiUrl}/tutor-classes`,
+      {
+        withCredentials: true
+      }
+    );
+
+  }
+
+  // =====================================
   // Get All Classes
   // =====================================
 
