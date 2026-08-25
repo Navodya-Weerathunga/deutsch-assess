@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatIcon } from "@angular/material/icon";
 
 
@@ -7,12 +7,15 @@ import { MatIcon } from "@angular/material/icon";
     selector: 'app-tutor-side-bar',
     templateUrl: './tutor-side-bar.component.html',
     styleUrls: ['./tutor-side-bar.component.css'],
-    imports: [MatIcon]
+    imports: [
+        MatIcon,
+        RouterModule
+    ]
 })
 export class TutorSideBarComponent {
 
     constructor(
-        private router: Router
+        private router: Router,
     ) {}
 
 
