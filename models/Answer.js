@@ -220,7 +220,7 @@ const AnswerSchema = new mongoose.Schema({
     // Overall AI Feedback
     // =====================================
 
-    overallFeedback: {
+    aiFeedback: {
 
         performanceLevel: {
             type: String,
