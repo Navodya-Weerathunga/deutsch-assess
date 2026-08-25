@@ -345,6 +345,85 @@ router.post(
   }
 );
 
+// =====================================================
+// Get Classes Assigned to Logged-in Tutor
+// =====================================================
+
+router.get(
+    "/tutor-classes",
+    verifyToken,
+    checkRole("TUTOR"),
+    async (req, res) => {
+
+        try {
+
+            // -----------------------------------------
+            // Find classes assigned to this tutor
+            // -----------------------------------------
+
+            const classes = await Class.find({
+
+                tutor: req.user.id
+
+            })
+            .sort({
+                classDate: -1
+            });
+
+
+            // -----------------------------------------
+            // Update class status automatically
+            // -----------------------------------------
+
+            for (const classDoc of classes) {
+
+                const oldStatus =
+                    classDoc.status;
+
+                updateClassStatus(classDoc);
+
+
+                // Save only if status changed
+
+                if (
+                    oldStatus !==
+                    classDoc.status
+                ) {
+
+                    await classDoc.save();
+
+                }
+
+            }
+
+
+            // -----------------------------------------
+            // Return classes
+            // -----------------------------------------
+
+            return res.status(200).json(
+                classes
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "Error fetching tutor classes:",
+                err
+            );
+
+            return res.status(500).json({
+
+                error: err.message
+
+            });
+
+        }
+
+    }
+);
+
 
 // =====================================================
 // Get All Classes
