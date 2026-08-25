@@ -50,8 +50,8 @@ const CEFR_RANGES = {
 // SCORING WEIGHTS
 // ============================================================
 
-const TASK_WEIGHT = 0.50;
-const LANGUAGE_WEIGHT = 0.50;
+const TASK_WEIGHT = 0.30;
+const LANGUAGE_WEIGHT = 0.70;
 
 
 // ============================================================

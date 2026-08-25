@@ -69,8 +69,7 @@ export class LoginComponent {
             break;
 
           case 'TUTOR':
-            alert('Login successful! Welcome, ' + user.firstName + ' ' + user.lastName + '.');
-            // this.router.navigate(['/tutor-dashboard']);
+            this.router.navigate(['/tutor-navbar']);
             break;
 
           case 'STUDENT':

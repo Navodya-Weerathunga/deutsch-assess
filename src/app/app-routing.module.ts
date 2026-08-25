@@ -19,6 +19,9 @@ export const routes: Routes = [
     // Student navbar route
     {path: 'student-navbar', loadComponent: () => import('./components/student-side-bar/student-side-bar.component').then(m => m.StudentNavbarComponent)},
 
+    // Tutor navbar route
+    {path: 'tutor-navbar', loadComponent: () => import('./components/tutor-side-bar/tutor-side-bar.component').then(m => m.TutorSideBarComponent)},
+
     // Student list route
     {path: 'student-list', loadComponent: () => import('./components/student-list/student-list.component').then(m => m.StudentListComponent)},
 

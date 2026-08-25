@@ -1,20 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
 import { FormsModule } from '@angular/forms';
-
 import { MatIconModule } from '@angular/material/icon';
-
 import { MatButtonModule } from '@angular/material/button';
-
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
 import { Router } from '@angular/router';
-
 import { AnswerService } from '../../services/answer.service';
-
 import { AdminNavbarComponent } from '../admin-nav-bar/admin-nav-bar.component';
-
 
 @Component({
   selector: 'app-admin-results',
