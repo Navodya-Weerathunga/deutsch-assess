@@ -1,7 +1,7 @@
 // src/app/services/answer.service.ts
 
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
@@ -16,7 +16,7 @@ export class AnswerService {
 
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
   ) {}
 
 
@@ -64,6 +64,59 @@ export class AnswerService {
     return this.http.get<any[]>(
       this.apiUrl,
       {
+        withCredentials: true
+      }
+    );
+
+  }
+
+  // =====================================
+  // Get Assessment Results for Tutor
+  // =====================================
+
+  getTutorAssessmentResults(
+    level?: string,
+    batch?: string,
+    search?: string
+  ): Observable<any[]> {
+
+    let params = new HttpParams();
+
+
+    if (level) {
+
+      params = params.set(
+        'level',
+        level
+      );
+
+    }
+
+
+    if (batch) {
+
+      params = params.set(
+        'batch',
+        batch
+      );
+
+    }
+
+
+    if (search) {
+
+      params = params.set(
+        'search',
+        search
+      );
+
+    }
+
+
+    return this.http.get<any[]>(
+      `${this.apiUrl}/tutor/results`,
+      {
+        params,
         withCredentials: true
       }
     );

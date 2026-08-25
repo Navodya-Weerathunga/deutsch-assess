@@ -64,8 +64,11 @@ export const routes: Routes = [
     // Student assessment view route
     {path: 'student-assessment/:id', loadComponent: () => import('./components/student-assessment-view/student-assessment-view.component').then(m => m.StudentAssessmentViewComponent)},
 
-    // Student results route
+    // Student results route 
     {path: 'my-results', loadComponent: () => import('./components/student-results/student-results.component').then(m => m.StudentResultsComponent)},
+
+    // Student results list route - Tutor
+    {path: 'tutor-results', loadComponent: () => import('./components/tutor-view-results/tutor-view-results.component').then(m => m.TutorResultsComponent)},
 
     // Admin results route
     {path: 'admin-results', loadComponent: () => import('./components/admin-view-results/admin-view-results.component').then(m => m.AdminResultsComponent)},
