@@ -18,6 +18,7 @@ const checkRole = require("../middleware/checkRloe");
 
 const ocrService = require("../services/ocr.service");
 const { evaluateQuestion } = require("../services/assessment-scoring.service");
+const { generateOverallFeedback } = require("../services/feedback.service");
 
 // =========================================
 // Process OCR
@@ -172,6 +173,8 @@ async function processOCR(answerId) {
 
         const questionResults = [];
 
+        const feedbackQuestions = [];
+
         let totalMarksAwarded = 0;
 
 
@@ -208,16 +211,9 @@ async function processOCR(answerId) {
 
             const result =
                 await evaluateQuestion({
-
-                    question:
-                        question.question,
-
-                    answer:
-                        studentAnswer,
-
-                    marks:
-                        question.marks,
-
+                    question: question.question,
+                    answer: studentAnswer,
+                    marks: question.marks,
                     cefr
                 });
 
@@ -227,37 +223,20 @@ async function processOCR(answerId) {
             // -------------------------------------
 
             questionResults.push({
-
-                questionNo:
-                    question.questionNo,
-
-                taskCompletion:
-                    result.taskCompletion,
-
-                taskReason:
-                    result.taskReason,
-
-                xlmScore:
-                    result.xlmScore,
-
-                languageScore:
-                    result.languageScore,
-
-                finalPercentage:
-                    result.finalPercentage,
-
-                allocatedMarks:
-                    question.marks,
-
-                awardedMarks:
-                    result.awardedMarks
-
+                questionNo: question.questionNo,
+                question: question.question,
+                answer: studentAnswer,
+                taskCompletion: result.taskCompletion,
+                taskReason: result.taskReason,
+                xlmScore: result.xlmScore,
+                languageScore: result.languageScore,
+                maximumMarks: question.marks,
+                finalPercentage: result.finalPercentage,
+                allocatedMarks: question.marks,
+                awardedMarks: result.awardedMarks
             });
 
-
-            totalMarksAwarded +=
-                result.awardedMarks;
-
+            totalMarksAwarded += result.awardedMarks;
 
             console.log(
                 `Q${question.questionNo}: ` +
@@ -279,6 +258,43 @@ async function processOCR(answerId) {
                 totalMarksAwarded.toFixed(2)
             );
         
+        // =========================================
+        // Generate AI Overall Feedback
+        // =========================================
+
+        console.log(
+            "========== GENERATING AI FEEDBACK =========="
+        );
+
+        const aiFeedback =
+            await generateOverallFeedback({
+
+                level:
+                    assessment.level,
+
+                assessmentTitle:
+                    assessment.title,
+
+                totalMarks:
+                    assessment.totalMarks,
+
+                totalMarksAwarded:
+                    Number(
+                        totalMarksAwarded.toFixed(2)
+                    ),
+
+                questions:
+                    feedbackQuestions
+
+            });
+
+        console.log(
+            "========== AI FEEDBACK GENERATED =========="
+        );
+
+        answer.aiFeedback =
+            aiFeedback;
+        
         answer.assessmentStatus =
             "COMPLETED";
 
@@ -287,6 +303,7 @@ async function processOCR(answerId) {
 
         answer.markedAt =
             new Date();
+        
 
         await answer.save();
 
