@@ -1520,7 +1520,7 @@ router.get("/:answerId/file", verifyToken, checkRole("STUDENT"),async (req, res)
 );
 
 // =====================================================
-// Get Student / Admin Answer Result
+// Get Student / Admin / Tutor Answer Result
 // =====================================================
 
 router.get("/:answerId", verifyToken, async (req, res) => {
@@ -1562,12 +1562,41 @@ router.get("/:answerId", verifyToken, async (req, res) => {
                 answer.student._id.toString() ===
                 req.user.id.toString();
 
+
+            let isAssignedTutor = false;
+
+            if ( req.user.role === "TUTOR" && answer.student )
+                {
+                const student =
+                    await User.findById(
+                        answer.student._id
+                    )
+                    .select(
+                        "tutorIncharged"
+                    );
+
+
+
+                if (
+                    student &&
+                    student.tutorIncharged &&
+                    student.tutorIncharged.toString() ===
+                    req.user.id.toString()
+                ) {
+
+                    isAssignedTutor = true;
+
+                }
+
+            }
+
+            
             // -----------------------------------------
             // Student can only view own result
             // Admin can view any result
             // -----------------------------------------
 
-            if (!isAdmin && !isOwner) {
+            if (!isAdmin && !isOwner && !isAssignedTutor) {
                 return res.status(403).json({
                     msg:"You are not authorized to view this result."
                 });
